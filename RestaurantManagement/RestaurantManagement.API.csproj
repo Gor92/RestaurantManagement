@@ -11,11 +11,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Middlewares\" />
-    <Folder Include="HealthChecks\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\RestaurantManagement.DAL\RestaurantManagement.DAL.csproj" />
     <ProjectReference Include="..\RestaurantManagement.RestaurantIdentification\RestaurantManagement.RestaurantIdentification.csproj" />
   </ItemGroup>
