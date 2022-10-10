@@ -11,11 +11,11 @@ namespace RestaurantManagement.DAL.Abstraction
 {
     public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
     {
-        private readonly RestaurantManagementContext _dbContext;
+        private readonly DbContext _dbContext;
         private readonly IAuthService _authService;
         private readonly DbSet<T> _dbSet;
 
-        public GenericRepository(RestaurantManagementContext dbContext, IAuthService authService)
+        public GenericRepository(DbContext dbContext, IAuthService authService)
         {
             _dbContext = dbContext;
             _authService = authService;

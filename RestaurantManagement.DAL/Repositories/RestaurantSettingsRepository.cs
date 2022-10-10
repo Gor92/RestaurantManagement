@@ -13,7 +13,7 @@ namespace RestaurantManagement.DAL.Repositories
 {
     public class RestaurantSettingsRepository : GenericRepository<RestaurantSettings>, IRestaurantSettingsRepository
     {
-        public RestaurantSettingsRepository(RestaurantManagementContext context, IAuthService authService) : base(context, authService)
+        public RestaurantSettingsRepository(CommonContext context, IAuthService authService) : base(context, authService)
         {
 
         }
