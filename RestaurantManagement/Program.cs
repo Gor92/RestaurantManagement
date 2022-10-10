@@ -11,7 +11,6 @@ builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddDefaultData(builder.Configuration);
 
-builder.Services.AddTenantIdentification();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
