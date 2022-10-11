@@ -5,13 +5,15 @@ VisualStudioVersion = 17.1.32328.378
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RestaurantManagement.API", "RestaurantManagement\RestaurantManagement.API.csproj", "{7150DFB8-C3D4-40ED-852F-C7B0DA05C402}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RestaurantManagement.Core", "RestaurantManagement.Core\RestaurantManagement.Core.csproj", "{CB623DBF-15D0-4AF4-864D-28BCB4EFA6A7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RestaurantManagement.Core", "RestaurantManagement.Core\RestaurantManagement.Core.csproj", "{CB623DBF-15D0-4AF4-864D-28BCB4EFA6A7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RestaurantManagement.BLL", "RestaurantManagement.BLL\RestaurantManagement.BLL.csproj", "{46E7164C-2AE7-4FBA-B5D8-DFA5E3EB59A6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RestaurantManagement.BLL", "RestaurantManagement.BLL\RestaurantManagement.BLL.csproj", "{46E7164C-2AE7-4FBA-B5D8-DFA5E3EB59A6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RestaurantManagement.DAL", "RestaurantManagement.DAL\RestaurantManagement.DAL.csproj", "{F6FFEE04-2EB7-4005-83FE-1D39AC355580}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RestaurantManagement.DAL", "RestaurantManagement.DAL\RestaurantManagement.DAL.csproj", "{F6FFEE04-2EB7-4005-83FE-1D39AC355580}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RestaurantManagement.RestaurantIdentification", "RestaurantManagement.RestaurantIdentification\RestaurantManagement.RestaurantIdentification.csproj", "{783F347F-880E-4F87-AB6C-6D3BC797BD02}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RestaurantManagement.RestaurantIdentification", "RestaurantManagement.RestaurantIdentification\RestaurantManagement.RestaurantIdentification.csproj", "{783F347F-880E-4F87-AB6C-6D3BC797BD02}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RestaurantManagement.Data", "RestaurantManagement.Data\RestaurantManagement.Data.csproj", "{7F297CCB-7183-4E2A-85F1-3EF915571F5A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{783F347F-880E-4F87-AB6C-6D3BC797BD02}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{783F347F-880E-4F87-AB6C-6D3BC797BD02}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{783F347F-880E-4F87-AB6C-6D3BC797BD02}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7F297CCB-7183-4E2A-85F1-3EF915571F5A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7F297CCB-7183-4E2A-85F1-3EF915571F5A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7F297CCB-7183-4E2A-85F1-3EF915571F5A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7F297CCB-7183-4E2A-85F1-3EF915571F5A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
