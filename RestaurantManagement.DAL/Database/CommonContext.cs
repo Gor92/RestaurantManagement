@@ -7,6 +7,10 @@ namespace RestaurantManagement.DAL.Database
     {
         public DbSet<RestaurantSettings> RestaurantSettings { get; set; }
 
+        public CommonContext(DbContextOptions<CommonContext> options) : base(options)
+        {
+        }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             //Order

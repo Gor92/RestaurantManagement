@@ -13,6 +13,10 @@ namespace RestaurantManagement.DAL.Database
         //public DbSet<Permission> Permission { get; set; }
         public DbSet<UserRolePermission> UserRolePermission { get; set; }
 
+        public RestaurantManagementContext(DbContextOptions<RestaurantManagementContext> options) : base(options)
+        {
+        }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             //Order
@@ -99,5 +103,13 @@ namespace RestaurantManagement.DAL.Database
             modelBuilder.Entity<UserRolePermission>().Property(x => x.Id).ValueGeneratedOnAdd();
             modelBuilder.Entity<UserRolePermission>().Property(x => x.RowVersion).IsRowVersion();
         }
+
+        //protected override void OnConfiguring(DbContextOptionsBuilder options)
+        //{
+        //    if (!options.IsConfigured)
+        //    {
+        //        options.UseSqlServer("Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Users\\User\\Source\\Repos\\Gor92\\RestaurantManagement\\RestaurantManagement.Data\\DatabaseFile\\RestaurantManagement.mdf;Integrated Security=True");
+        //    }
+        //}
     }
 }
