@@ -1,9 +1,11 @@
 
+using RestaurantManagement.API;
 using RestaurantManagement.BLL.BLs;
 using Microsoft.EntityFrameworkCore;
 using RestaurantManagement.DAL.Database;
 using RestaurantManagement.DAL.Extensions;
 using RestaurantManagement.BLL.SecureProxies;
+using RestaurantManagement.Core.Services.Contracts;
 using RestaurantManagement.Core.Services.Contracts.BLs;
 using RestaurantManagement.RestaurantIdentification.Extensions;
 
@@ -13,10 +15,12 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddHttpContextAccessor();
 
-builder.Services.AddDefaultData(builder.Configuration);
+builder.Services.AddSingleton<IMapper,Mapper>();
 
-builder.Services.AddScoped<IOrderBL, OrderBL>();
-builder.Services.Decorate<IOrderBL, OrderBlProxy>();
+//builder.Services.AddDefaultData(builder.Configuration);
+
+//builder.Services.AddScoped<IOrderBL, OrderBL>();
+//builder.Services.Decorate<IOrderBL, OrderBlProxy>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -35,9 +39,11 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseRouting();
 app.UseAuthorization();
 
 app.MapControllers();
+
 
 app.Run();
 

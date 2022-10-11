@@ -2,11 +2,13 @@
 
 namespace RestaurantManagement.API.Controllers
 {
-    public class OrderController : Controller
+    [Route("orders")]
+    public class OrderController : ControllerBase
     {
+        [HttpGet]
         public IActionResult Index()
         {
-            return View();
+            return Ok("a");
         }
     }
 }
