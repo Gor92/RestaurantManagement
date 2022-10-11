@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using RestaurantManagement.Core.Services.Contracts;
 using RestaurantManagement.Core.Repositories.Contracts;
-using RestaurantManagement.Core.Services.Contracts;
 
 namespace RestaurantManagement.DAL.Database
 {
@@ -39,6 +34,7 @@ namespace RestaurantManagement.DAL.Database
             _restaurantRepository = restaurantRepository;
             _rolePermissionRepository = rolePermissionRepository;
             _roleRepository = roleRepository;
+            _tableRepository = tableRepository;
             _userRepository = userRepository;
             _userRolePermissionRepository = userRolePermissionRepository;
         }

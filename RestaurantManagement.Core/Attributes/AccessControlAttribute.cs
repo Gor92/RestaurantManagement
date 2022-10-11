@@ -1,12 +1,6 @@
-﻿using System;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Collections.Generic;
-
-namespace RestaurantManagement.Core.Attributes
+﻿namespace RestaurantManagement.Core.Attributes
 {
-    [AttributeUsage(AttributeTargets.All, AllowMultiple = true )]
+    [AttributeUsage(AttributeTargets.All, AllowMultiple = true)]
     public class AccessControlAttribute : Attribute
     {
         public ResourceType ResourceType { get; set; }

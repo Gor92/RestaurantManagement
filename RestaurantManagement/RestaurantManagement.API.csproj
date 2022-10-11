@@ -7,15 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Scrutor" Version="4.2.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Middlewares\" />
-    <Folder Include="HealthChecks\" />
-  </ItemGroup>
-
-  <ItemGroup>
+    <ProjectReference Include="..\RestaurantManagement.BLL\RestaurantManagement.BLL.csproj" />
     <ProjectReference Include="..\RestaurantManagement.DAL\RestaurantManagement.DAL.csproj" />
     <ProjectReference Include="..\RestaurantManagement.RestaurantIdentification\RestaurantManagement.RestaurantIdentification.csproj" />
   </ItemGroup>

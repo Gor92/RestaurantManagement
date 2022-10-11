@@ -1,7 +1,6 @@
 ﻿using System.Linq.Expressions;
 using RestaurantManagement.Core;
 using Microsoft.EntityFrameworkCore;
-using RestaurantManagement.DAL.Database;
 using RestaurantManagement.Core.Entities;
 using RestaurantManagement.Core.Metadata;
 using RestaurantManagement.Core.Services.Contracts;
@@ -81,7 +80,7 @@ namespace RestaurantManagement.DAL.Abstraction
                 if (((IRestaurant)entityToUpdate).RestaurantId != ((IRestaurant)entityToUpdate).RestaurantId
                     && _authService.GetRoleName() != "SuperAdmin")
                     throw new InvalidOperationException("insufficient privileges to update entity");
-                
+
             if (entityToUpdate is null)
             {
                 throw new Exception();
