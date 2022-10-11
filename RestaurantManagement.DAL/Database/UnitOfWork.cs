@@ -7,7 +7,7 @@ namespace RestaurantManagement.DAL.Database
     {
         private readonly IOrderRepository _orderRepository;
         private readonly IOrderDetailsRepository _orderDetailsRepository;
-        private readonly IPermissionRepository _permissionRepository;
+        //private readonly IPermissionRepository _permissionRepository;
         private readonly IProductRepository _productRepository;
         private readonly IRestaurantRepository _restaurantRepository;
         private readonly IRolePermissionRepository _rolePermissionRepository;
@@ -18,7 +18,7 @@ namespace RestaurantManagement.DAL.Database
 
         public UnitOfWork(IOrderRepository orderRepository,
                           IOrderDetailsRepository orderDetailsRepository,
-                          IPermissionRepository permissionRepository,
+                          //IPermissionRepository permissionRepository,
                           IProductRepository productRepository,
                           IRestaurantRepository restaurantRepository,
                           IRolePermissionRepository rolePermissionRepository,
@@ -29,7 +29,7 @@ namespace RestaurantManagement.DAL.Database
         {
             _orderRepository = orderRepository;
             _orderDetailsRepository = orderDetailsRepository;
-            _permissionRepository = permissionRepository;
+           // _permissionRepository = permissionRepository;
             _productRepository = productRepository;
             _restaurantRepository = restaurantRepository;
             _rolePermissionRepository = rolePermissionRepository;
@@ -41,7 +41,7 @@ namespace RestaurantManagement.DAL.Database
 
         public IOrderRepository OrderRepository { get { return _orderRepository; } }
         public IOrderDetailsRepository OrderDetailsRepository { get { return _orderDetailsRepository; } }
-        public IPermissionRepository PermissionRepository { get { return _permissionRepository; } }
+        //public IPermissionRepository PermissionRepository { get { return _permissionRepository; } }
         public IProductRepository ProductRepository { get { return _productRepository; } }
         public IRestaurantRepository RestaurantRepository { get { return _restaurantRepository; } }
         public IRolePermissionRepository RolePermissionRepository { get { return _rolePermissionRepository; } }

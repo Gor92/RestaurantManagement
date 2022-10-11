@@ -18,5 +18,9 @@ namespace RestaurantManagement.Core.Entities
         public bool IsLocked { get; set; }
         public bool IsDeleted { get; set; }
         public int RestaurantId { get; set; }
+        public virtual ICollection<Order> Orders { get; set; }
+        public virtual ICollection<OrderDetails> OrderDetails { get; set; }
+        public virtual ICollection<Product> Products { get; set; }
+
     }
 }

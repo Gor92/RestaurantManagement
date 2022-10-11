@@ -10,7 +10,7 @@ namespace RestaurantManagement.DAL.Database
         public DbSet<Table> Table { get; set; }
         public DbSet<User> User { get; set; }
         public DbSet<Role> Role { get; set; }
-        public DbSet<Permission> Permission { get; set; }
+        //public DbSet<Permission> Permission { get; set; }
         public DbSet<UserRolePermission> UserRolePermission { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -20,15 +20,64 @@ namespace RestaurantManagement.DAL.Database
             modelBuilder.Entity<Order>().Property(x => x.Id).ValueGeneratedOnAdd();
             modelBuilder.Entity<Order>().Property(x => x.RowVersion).IsRowVersion();
 
+            modelBuilder.Entity<Order>().HasMany(x => x.OrderDetails)
+                                        .WithOne(x => x.Order)
+                                        .HasForeignKey(x => x.OrderId)
+                                        .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<Order>().HasOne(x => x.Restaurant)
+                                        .WithMany(x => x.Orders)
+                                        .HasForeignKey(x => x.RestaurantId)
+                                        .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<Order>().HasOne(x => x.Table)
+                                        .WithMany(x => x.Orders)
+                                        .HasForeignKey(x => x.TableId)
+                                        .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<Order>().HasOne(x => x.CreatedUser)
+                                        .WithMany(x => x.Orders)
+                                        .HasForeignKey(x => x.CreatedByUserId)
+                                        .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<Order>().HasOne(x => x.UpdatedUser)
+                                       .WithMany(x => x.Orders)
+                                       .HasForeignKey(x => x.UpdatedByUserId)
+                                       .OnDelete(DeleteBehavior.NoAction);
+
             //Product
             modelBuilder.Entity<Product>().HasKey(x => x.Id);
             modelBuilder.Entity<Product>().Property(x => x.Id).ValueGeneratedOnAdd();
             modelBuilder.Entity<Product>().Property(x => x.RowVersion).IsRowVersion();
 
+            modelBuilder.Entity<Product>().HasOne(x => x.Restaurant)
+                                          .WithMany(x => x.Products)
+                                          .HasForeignKey(x => x.RestaurantId)
+                                          .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<Product>().HasOne(x => x.OrderDetails)
+                                          .WithOne(x => x.Product)
+                                          .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<Product>().HasOne(x => x.CreatedUser)
+                                          .WithMany(x => x.Products)
+                                          .HasForeignKey(x => x.CreatedByUserId)
+                                          .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<Product>().HasOne(x => x.UpdatedUser)
+                                          .WithMany(x => x.Products)
+                                          .HasForeignKey(x => x.UpdatedByUserId)
+                                          .OnDelete(DeleteBehavior.NoAction);
+
             //Table
             modelBuilder.Entity<Table>().HasKey(x => x.Id);
             modelBuilder.Entity<Table>().Property(x => x.Id).ValueGeneratedOnAdd();
             modelBuilder.Entity<Table>().Property(x => x.RowVersion).IsRowVersion();
+
+            modelBuilder.Entity<Table>().HasOne(x => x.Restaurant)
+                                        .WithMany(x => x.Tables)
+                                        .HasForeignKey(x => x.RestaurantId)
+                                        .OnDelete(DeleteBehavior.NoAction);
 
             //User
             modelBuilder.Entity<User>().HasKey(x => x.Id);
@@ -40,10 +89,10 @@ namespace RestaurantManagement.DAL.Database
             modelBuilder.Entity<Role>().Property(x => x.Id).ValueGeneratedOnAdd();
             modelBuilder.Entity<Role>().Property(x => x.RowVersion).IsRowVersion();
 
-            //Permission
-            modelBuilder.Entity<Permission>().HasKey(x => x.Id);
-            modelBuilder.Entity<Permission>().Property(x => x.Id).ValueGeneratedOnAdd();
-            modelBuilder.Entity<Permission>().Property(x => x.RowVersion).IsRowVersion();
+            ////Permission
+            //modelBuilder.Entity<Permission>().HasKey(x => x.Id);
+            //modelBuilder.Entity<Permission>().Property(x => x.Id).ValueGeneratedOnAdd();
+            //modelBuilder.Entity<Permission>().Property(x => x.RowVersion).IsRowVersion();
 
             //UserRolePermission
             modelBuilder.Entity<UserRolePermission>().HasKey(x => x.Id);

@@ -21,7 +21,9 @@ namespace RestaurantManagement.DAL.Extensions
                 var service = sp.GetRequiredService<ITenantService>();
                 var tenantContext = await service.GetTenantAsync(CancellationToken.None);
 
-                options.UseSqlServer(tenantContext!.ConnectionString);
+                options.UseSqlServer(tenantContext != null
+                                                   ? tenantContext.ConnectionString ?? configuration.GetConnectionString("DefaultConnectionString")
+                                                   : configuration.GetConnectionString("DefaultConnectionString"));
             });
         }
     }

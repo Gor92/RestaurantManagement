@@ -13,7 +13,8 @@ namespace RestaurantManagement.Core.Entities
         public decimal TotalPrice { get; set; }
         public virtual Restaurant Restaurant { get; set; }
         public virtual Table Table { get; set; }
-        public virtual User User { get; set; }
+        public virtual User CreatedUser { get; set; }
+        public virtual User UpdatedUser { get; set; }
         public virtual ICollection<OrderDetails> OrderDetails { get; set; }
     }
 }
