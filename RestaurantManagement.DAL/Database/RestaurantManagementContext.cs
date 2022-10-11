@@ -40,12 +40,12 @@ namespace RestaurantManagement.DAL.Database
                                         .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<Order>().HasOne(x => x.CreatedUser)
-                                        .WithMany(x => x.Orders)
+                                        .WithMany(x => x.CreatedOrders)
                                         .HasForeignKey(x => x.CreatedByUserId)
                                         .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<Order>().HasOne(x => x.UpdatedUser)
-                                       .WithMany(x => x.Orders)
+                                       .WithMany(x => x.UpdatedOrders)
                                        .HasForeignKey(x => x.UpdatedByUserId)
                                        .OnDelete(DeleteBehavior.NoAction);
 
@@ -64,12 +64,12 @@ namespace RestaurantManagement.DAL.Database
                                           .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<Product>().HasOne(x => x.CreatedUser)
-                                          .WithMany(x => x.Products)
+                                          .WithMany(x => x.CreatedProducts)
                                           .HasForeignKey(x => x.CreatedByUserId)
                                           .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<Product>().HasOne(x => x.UpdatedUser)
-                                          .WithMany(x => x.Products)
+                                          .WithMany(x => x.UpdatedProducts)
                                           .HasForeignKey(x => x.UpdatedByUserId)
                                           .OnDelete(DeleteBehavior.NoAction);
 

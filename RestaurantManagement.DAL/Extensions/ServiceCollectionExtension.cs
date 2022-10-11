@@ -14,7 +14,7 @@ namespace RestaurantManagement.DAL.Extensions
         public static void AddDefaultData(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddDbContext<CommonContext>(options => options.UseSqlServer(configuration.GetConnectionString("DefaultConnectionString")));
-            services.AddSingleton<IRestaurantSettingsRepository, RestaurantSettingsRepository>();
+            services.AddScoped<IRestaurantSettingsRepository, RestaurantSettingsRepository>();
             services.AddTenantIdentification();
             services.AddDbContext<RestaurantManagementContext>(async (sp, options) =>
             {

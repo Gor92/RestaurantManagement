@@ -8,8 +8,8 @@ namespace RestaurantManagement.RestaurantIdentification.Extensions
     {
         public static void AddTenantIdentification(this IServiceCollection services)
         {
-            services.AddSingleton<ITenantInformationResolver, TenantInformationResolver>();
-            services.AddSingleton<ITenantService, TenantService>();
+            services.AddScoped<ITenantInformationResolver, TenantInformationResolver>();
+            services.AddScoped<ITenantService, TenantService>();
         }
     }
 }

@@ -1,12 +1,13 @@
 
 using RestaurantManagement.BLL.BLs;
+using Microsoft.EntityFrameworkCore;
+using RestaurantManagement.DAL.Database;
 using RestaurantManagement.DAL.Extensions;
 using RestaurantManagement.BLL.SecureProxies;
 using RestaurantManagement.Core.Services.Contracts.BLs;
 using RestaurantManagement.RestaurantIdentification.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
-
 // Add services to the container.
 
 builder.Services.AddControllers();
@@ -23,6 +24,8 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
+
+UpdateDatabase();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -37,3 +40,10 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+
+void UpdateDatabase()
+{
+    var dbContext = app.Services.GetService<RestaurantManagementContext>();
+    dbContext?.Database.Migrate();
+}

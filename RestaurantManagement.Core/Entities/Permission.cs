@@ -1,6 +1,6 @@
 ﻿namespace RestaurantManagement.Core.Entities
 {
-    public class Permission
+    public class Permission:BaseEntity
     {
         public AccessLevel AccessLevel { get; set; }
         public Resource Resource { get; set; }
