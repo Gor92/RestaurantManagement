@@ -1,9 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Collections.Generic;
-using RestaurantManagement.Core.Metadata;
+﻿using RestaurantManagement.Core.Metadata;
 
 namespace RestaurantManagement.Core.Entities
 {
@@ -11,7 +6,7 @@ namespace RestaurantManagement.Core.Entities
     {
         public int TableId { get; set; }
         public int RestaurantId { get; set; }
-        public DateTime CreateDate { get; set ; }
+        public DateTime CreateDate { get; set; }
         public DateTime UpdateDate { get; set; }
         public int CreatedByUserId { get; set; }
         public int UpdatedByUserId { get; set; }

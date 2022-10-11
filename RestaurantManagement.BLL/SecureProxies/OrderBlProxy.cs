@@ -1,11 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using RestaurantManagement.Core;
-using System.Collections.Generic;
-using RestaurantManagement.Core.Entities;
-using RestaurantManagement.Core.Attributes;
+﻿using RestaurantManagement.Core.Entities;
 using RestaurantManagement.Core.Services.Contracts;
 using RestaurantManagement.Core.Services.Contracts.BLs;
 

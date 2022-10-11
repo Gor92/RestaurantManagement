@@ -1,12 +1,6 @@
-﻿using System;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
 using Microsoft.AspNetCore.Http;
-using System.Collections.Generic;
 using Microsoft.Extensions.Primitives;
-using RestaurantManagement.Core.Models;
 using RestaurantManagement.Core.Entities;
 using RestaurantManagement.Core.Services.Contracts;
 using RestaurantManagement.RestaurantIdentification.Services.Contracts;
@@ -17,7 +11,7 @@ namespace RestaurantManagement.RestaurantIdentification.Services.Implementations
     {
         private readonly IJWTTokenService _jWTTokenService;
 
-        public TenantInformationResolver( IJWTTokenService jWTTokenService)
+        public TenantInformationResolver(IJWTTokenService jWTTokenService)
         {
             _jWTTokenService = jWTTokenService;
         }

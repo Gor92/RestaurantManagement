@@ -1,19 +1,14 @@
-﻿using RestaurantManagement.Core.Entities;
-using RestaurantManagement.Core.Repositories.Contracts;
-using RestaurantManagement.Core.Services.Contracts;
+﻿using RestaurantManagement.DAL.Database;
+using RestaurantManagement.Core.Entities;
 using RestaurantManagement.DAL.Abstraction;
-using RestaurantManagement.DAL.Database;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using RestaurantManagement.Core.Services.Contracts;
+using RestaurantManagement.Core.Repositories.Contracts;
 
 namespace RestaurantManagement.DAL.Repositories
 {
     public class OrderRepository : GenericRepository<Order>, IOrderRepository
     {
-        public OrderRepository(RestaurantManagementContext context, IAuthService authService): base(context, authService)
+        public OrderRepository(RestaurantManagementContext context, IAuthService authService) : base(context, authService)
         {
 
         }

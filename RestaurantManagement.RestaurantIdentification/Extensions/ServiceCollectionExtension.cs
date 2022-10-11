@@ -1,9 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Collections.Generic;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using RestaurantManagement.RestaurantIdentification.Services.Contracts;
 using RestaurantManagement.RestaurantIdentification.Services.Implementations;
 

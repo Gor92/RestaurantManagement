@@ -1,9 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Collections.Generic;
-using RestaurantManagement.DAL.Database;
+﻿using RestaurantManagement.DAL.Database;
 using RestaurantManagement.Core.Entities;
 using RestaurantManagement.DAL.Abstraction;
 using RestaurantManagement.Core.Services.Contracts;

@@ -1,14 +1,7 @@
-﻿using System;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
 using Microsoft.AspNetCore.Http;
-using System.Collections.Generic;
-using Microsoft.Extensions.Options;
 using RestaurantManagement.Core.Models;
 using RestaurantManagement.Core.Entities;
-using System.Security.Cryptography.X509Certificates;
 using RestaurantManagement.Core.Repositories.Contracts;
 using RestaurantManagement.RestaurantIdentification.Services.Contracts;
 

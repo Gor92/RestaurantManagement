@@ -1,10 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Collections.Generic;
-using RestaurantManagement.DAL.Repositories;
-using RestaurantManagement.Core.Services.Contracts;
+﻿using RestaurantManagement.Core.Services.Contracts;
 using RestaurantManagement.Core.Repositories.Contracts;
 
 namespace RestaurantManagement.DAL.Database
