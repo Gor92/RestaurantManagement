@@ -23,6 +23,7 @@ namespace RestaurantManagement.Core
     public enum ResourceType
     {
         Undefined,
-        Order
+        Order,
+        OrderDetails
     }
 }

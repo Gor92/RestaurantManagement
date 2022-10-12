@@ -11,6 +11,7 @@ namespace RestaurantManagement.Core.Entities
         public int CreatedByUserId { get; set; }
         public int UpdatedByUserId { get; set; }
         public decimal TotalPrice { get; set; }
+        public bool IsPaid { get; set; }
         public virtual Restaurant Restaurant { get; set; }
         public virtual Table Table { get; set; }
         public virtual User CreatedUser { get; set; }

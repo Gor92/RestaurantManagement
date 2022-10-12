@@ -14,10 +14,10 @@ namespace RestaurantManagement.BLL.SecureProxies
             _orderBl = orderBL;
             _accessControlService = accessControlService;
         }
-        public async Task<Order> AddAsync(int userId, Order order, CancellationToken cancellationToken)
+        public async Task<Order> AddAsync(int userId, Order order, IEnumerable<OrderDetails> orderDetails, CancellationToken cancellationToken)
         {
             await _accessControlService.ValidateAccessAsync(userId, typeof(IOrderBL), nameof(AddAsync), cancellationToken);
-            return await _orderBl.AddAsync(userId, order, cancellationToken);
+            return await _orderBl.AddAsync(userId, order, orderDetails, cancellationToken);
         }
 
     }

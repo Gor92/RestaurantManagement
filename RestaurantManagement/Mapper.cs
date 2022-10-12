@@ -14,7 +14,8 @@ namespace RestaurantManagement.API
             var config = new MapperConfiguration(cfg =>
             {
                 cfg.CreateMap<OrderReadonlyViewModel, Order>();
-               //cfg.CreateMap<A, B>().ConvertUsing<MyConvertor>();
+                cfg.CreateMap<OrderDetailsReadonlyViewModel, OrderDetails>();
+                //cfg.CreateMap<A, B>().ConvertUsing<MyConvertor>();
             });
             _mapper = config.CreateMapper();
         }

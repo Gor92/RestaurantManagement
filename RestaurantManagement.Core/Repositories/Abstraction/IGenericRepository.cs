@@ -23,7 +23,7 @@ namespace RestaurantManagement.Core.Repositories.Abstraction
         /// </summary>
         /// <param name="entities">The items to be created</param>
         /// <param name="cancellationToken">The cancellation token</param>
-        void BulkInsert(IEnumerable<T> entities, CancellationToken cancellationToken);
+        Task BulkInsert(IEnumerable<T> entities, CancellationToken cancellationToken);
 
         /// <summary>
         /// Updates the object that corresponds to the given <paramref name="entityToUpdate"/>

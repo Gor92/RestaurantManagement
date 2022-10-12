@@ -22,7 +22,7 @@ namespace RestaurantManagement.DAL.Abstraction
             _dbSet = dbContext.Set<T>();
         }
 
-        public virtual async void BulkInsert(IEnumerable<T> entities, CancellationToken cancellationToken)
+        public virtual async Task BulkInsert(IEnumerable<T> entities, CancellationToken cancellationToken)
         {
             foreach (var entity in entities)
                 await InsertAsync(entity, cancellationToken);
