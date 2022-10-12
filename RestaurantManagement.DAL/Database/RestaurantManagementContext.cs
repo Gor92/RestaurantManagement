@@ -6,13 +6,15 @@ namespace RestaurantManagement.DAL.Database
     public class RestaurantManagementContext : DbContext
     {
         public DbSet<Restaurant> Restaurants { get; set; }
-        public DbSet<Order> Order { get; set; }
-        public DbSet<Product> Product { get; set; }
-        public DbSet<Table> Table { get; set; }
-        public DbSet<User> User { get; set; }
-        public DbSet<Role> Role { get; set; }
-        //public DbSet<Permission> Permission { get; set; }
-        public DbSet<UserRolePermission> UserRolePermission { get; set; }
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderDetails> OrderDetails { get; set; }
+        public DbSet<Product> Products { get; set; }
+        public DbSet<Table> Tables { get; set; }
+        public DbSet<User> Users { get; set; }
+        public DbSet<Role> Roles { get; set; }
+        //public DbSet<Permission> Permissions { get; set; }
+        public DbSet<UserRolePermission> UserRolePermissions { get; set; }
+        public DbSet<RolePermission> RolePermissions { get; set; }
 
         public RestaurantManagementContext(DbContextOptions<RestaurantManagementContext> options) : base(options)
         {
@@ -20,7 +22,7 @@ namespace RestaurantManagement.DAL.Database
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            //DataSeed.DataSeed.Execute(modelBuilder);
+            DataSeed.DataSeed.Execute(modelBuilder);
 
             //Order
             modelBuilder.Entity<Order>().Property(x => x.RowVersion).IsRowVersion();

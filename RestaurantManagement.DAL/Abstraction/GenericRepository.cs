@@ -13,13 +13,12 @@ namespace RestaurantManagement.DAL.Abstraction
     {
         private readonly DbContext _dbContext;
         private readonly IAuthService _authService;
-        private readonly DbSet<T> _dbSet;
+        private protected DbSet<T> DbSet;
 
         public GenericRepository(DbContext dbContext, IAuthService authService)
         {
             _dbContext = dbContext;
             _authService = authService;
-            _dbSet = dbContext.Set<T>();
         }
 
         public virtual  IEnumerable<T> BulkInsert(IEnumerable<T> entities,
@@ -63,16 +62,16 @@ namespace RestaurantManagement.DAL.Abstraction
 
         public virtual async ValueTask<int> CountAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken = default)
         {
-            return await _dbSet.Where(predicate).CountAsync(cancellationToken);
+            return await DbSet.Where(predicate).CountAsync(cancellationToken);
         }
 
         public virtual async ValueTask<bool> ExistsAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken = default)
         {
-            return await _dbSet.AnyAsync(predicate, cancellationToken);
+            return await DbSet.AnyAsync(predicate, cancellationToken);
         }
         public virtual IEnumerable<T> GetAll()
         {
-            return _dbSet.AsNoTracking();
+            return DbSet.AsNoTracking();
         }
 
         public virtual async Task<IEnumerable<T>> GetAsync<TKey>(Expression<Func<T, bool>> predicate,
@@ -83,7 +82,7 @@ namespace RestaurantManagement.DAL.Abstraction
                                                            SortDirection? sortDirection = null,
                                                            Expression<Func<T, object>>[]? includes = null)
         {
-            IQueryable<T> query = _dbSet;
+            IQueryable<T> query = DbSet;
 
             if (predicate is not null)
                 query.Where(predicate);
@@ -142,13 +141,13 @@ namespace RestaurantManagement.DAL.Abstraction
                 ((IAuditMetadata)entity).CreatedByUserId = _authService.GetUserId();
             }
 
-            _dbSet.Add(entity);
+            DbSet.Add(entity);
             return entity;
         }
 
         public virtual async Task RemoveAsync(int id, CancellationToken cancellationToken = default)
         {
-            var entity = await _dbSet.FindAsync(id);
+            var entity = await DbSet.FindAsync(id);
 
             if (entity is IRestaurant)
                 if (((IRestaurant)entity).RestaurantId != ((IRestaurant)entity).RestaurantId

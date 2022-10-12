@@ -10,6 +10,7 @@ namespace RestaurantManagement.DAL.Repositories
     {
         public OrderDetailsRepository(RestaurantManagementContext context, IAuthService authService) : base(context, authService)
         {
+            DbSet = context.OrderDetails;
 
         }
     }

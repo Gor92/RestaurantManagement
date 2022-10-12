@@ -63,5 +63,7 @@ void UpdateDatabase()
     {
         var context = scope.ServiceProvider.GetRequiredService<RestaurantManagementContext>();
         context?.Database.Migrate();
+        var commonContext = scope.ServiceProvider.GetRequiredService<CommonContext>();
+        commonContext.Database.Migrate();
     }
 }

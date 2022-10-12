@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RestaurantManagement.DAL.Database;
 
@@ -11,9 +12,10 @@ using RestaurantManagement.DAL.Database;
 namespace RestaurantManagement.DAL.Migrations
 {
     [DbContext(typeof(RestaurantManagementContext))]
-    partial class RestaurantManagementContextModelSnapshot : ModelSnapshot
+    [Migration("20221012201126_DataSeedMigration")]
+    partial class DataSeedMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -69,7 +71,7 @@ namespace RestaurantManagement.DAL.Migrations
 
                     b.HasIndex("UpdatedByUserId");
 
-                    b.ToTable("Orders");
+                    b.ToTable("Order");
                 });
 
             modelBuilder.Entity("RestaurantManagement.Core.Entities.OrderDetails", b =>
@@ -178,7 +180,7 @@ namespace RestaurantManagement.DAL.Migrations
 
                     b.HasIndex("UpdatedByUserId");
 
-                    b.ToTable("Products");
+                    b.ToTable("Product");
 
                     b.HasData(
                         new
@@ -298,7 +300,7 @@ namespace RestaurantManagement.DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Roles");
+                    b.ToTable("Role");
                 });
 
             modelBuilder.Entity("RestaurantManagement.Core.Entities.RolePermission", b =>
@@ -325,7 +327,7 @@ namespace RestaurantManagement.DAL.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("RolePermissions");
+                    b.ToTable("RolePermission");
                 });
 
             modelBuilder.Entity("RestaurantManagement.Core.Entities.Table", b =>
@@ -354,7 +356,7 @@ namespace RestaurantManagement.DAL.Migrations
 
                     b.HasIndex("RestaurantId");
 
-                    b.ToTable("Tables");
+                    b.ToTable("Table");
 
                     b.HasData(
                         new
@@ -432,7 +434,7 @@ namespace RestaurantManagement.DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users");
+                    b.ToTable("User");
 
                     b.HasData(
                         new
@@ -488,7 +490,7 @@ namespace RestaurantManagement.DAL.Migrations
 
                     b.HasIndex("ResourceId");
 
-                    b.ToTable("UserRolePermissions");
+                    b.ToTable("UserRolePermission");
                 });
 
             modelBuilder.Entity("RestaurantManagement.Core.Entities.Order", b =>
