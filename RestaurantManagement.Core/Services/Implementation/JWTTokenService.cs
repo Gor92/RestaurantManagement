@@ -1,5 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using System.Text;
+using System.Security.Claims;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
 using RestaurantManagement.Core.Models;
 using RestaurantManagement.Core.Services.Contracts;
 using RestaurantManagement.Core.Models.OptionsModels;
@@ -8,20 +11,67 @@ namespace RestaurantManagement.Core.Services.Implementation
 {
     public class JWTTokenService : IJWTTokenService
     {
-        private readonly TokenModel _tokenModel;
-        public JWTTokenService(IOptions<TokenModel> options)
+        private readonly JwtModel _jwtModel;
+        public JWTTokenService(IOptions<JwtModel> options)
         {
-            _tokenModel = options.Value ?? throw new ArgumentNullException(nameof(options.Value));
+            _jwtModel = options.Value ?? throw new ArgumentNullException(nameof(options.Value));
         }
 
-        public UserModel DecodeToken(string jWTToken)
+        public UserModel DecodeToken(string jwtToken)
         {
-            throw new NotImplementedException();
+            var stream = jwtToken;
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(stream);
+            var tokenS = jsonToken as JwtSecurityToken;
+
+            var userIdValue = tokenS?.Claims.First(claim => claim.Type == "UserId").Value;
+            var restaurantIdValue = tokenS?.Claims.First(claim => claim.Type == "RestaurantId").Value;
+
+            if (!string.IsNullOrEmpty(userIdValue) && !string.IsNullOrEmpty(restaurantIdValue))
+            {
+                var successParsingUser = false;
+                var successParsingRestaurant = false;
+
+                successParsingUser = int.TryParse(userIdValue, out var userId);
+                successParsingRestaurant = int.TryParse(restaurantIdValue, out var restaurantId);
+
+                if (!successParsingUser || !successParsingRestaurant)
+                    throw new UnauthorizedAccessException();
+
+                return new UserModel()
+                {
+                    RestaurantId = restaurantId,
+                    UserId = userId
+                };
+            }
+
+            throw new UnauthorizedAccessException();
         }
 
         public string GenerateJWTToken(UserModel user)
         {
-            throw new NotImplementedException();
+
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(new[]
+                {
+                    new Claim("RestaurantId", user.RestaurantId.ToString()),
+                    new Claim("UserId", user.UserId.ToString()),
+                    new Claim(JwtRegisteredClaimNames.Jti,
+                        Guid.NewGuid().ToString())
+                }),
+                Expires = DateTime.UtcNow.AddMinutes(5),
+                Issuer = _jwtModel.Issuer,
+                Audience = _jwtModel.Audience,
+                SigningCredentials = new SigningCredentials
+                (new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_jwtModel.Key)),
+                    SecurityAlgorithms.HmacSha512Signature)
+            };
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            var jwtToken = tokenHandler.WriteToken(token);
+            var stringToken = tokenHandler.WriteToken(token);
+            return stringToken;
         }
     }
 }

@@ -24,7 +24,7 @@ namespace RestaurantManagement.API.Controllers
         [HttpPost(Name = "CreateOrder")]
         [OpenApiOperation("Create Order", "Endpoint to create a new Order")]
         [Produces("application/json")]
-        public async Task<IActionResult> AddOrder(OrderReadonlyViewModel orderReadonlyViewModel, CancellationToken cancellationToken)
+        public async Task<IActionResult> AddOrder([FromBody]OrderReadonlyViewModel orderReadonlyViewModel, CancellationToken cancellationToken)
         {
             var order = _mapper.Map<OrderReadonlyViewModel, Order>(orderReadonlyViewModel);
             var orderDetails = _mapper.Map<OrderDetailsReadonlyViewModel, OrderDetails>(orderReadonlyViewModel.OrderDetailsReadonlyViewModel);
