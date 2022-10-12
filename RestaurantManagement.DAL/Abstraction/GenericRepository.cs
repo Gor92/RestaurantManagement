@@ -22,13 +22,17 @@ namespace RestaurantManagement.DAL.Abstraction
             _dbSet = dbContext.Set<T>();
         }
 
-        public virtual async Task BulkInsert(IEnumerable<T> entities, CancellationToken cancellationToken)
+        public virtual  IEnumerable<T> BulkInsert(IEnumerable<T> entities,
+            CancellationToken cancellationToken = default)
         {
+            var list = new List<T>();
             foreach (var entity in entities)
-                await InsertAsync(entity, cancellationToken);
+                 list.Add(Insert(entity, cancellationToken));
+
+            return list;
         }
 
-        public virtual bool BulkRemove(IEnumerable<T> entities, CancellationToken cancellationToken)
+        public virtual bool BulkRemove(IEnumerable<T> entities, CancellationToken cancellationToken = default)
         {
             try
             {
@@ -45,20 +49,24 @@ namespace RestaurantManagement.DAL.Abstraction
             }
         }
 
-        public virtual async ValueTask BulkUpdateAsync(IEnumerable<T> entities, CancellationToken cancellationToken)
+        public virtual IEnumerable<T> BulkUpdate(IEnumerable<T> entities,
+            CancellationToken cancellationToken = default)
         {
+            var list = new List<T>();
             foreach (var entity in entities)
             {
-               await  UpdateAsync(entity, cancellationToken);
+                list.Add(Update(entity, cancellationToken));
             }
+
+            return list;
         }
 
-        public virtual async ValueTask<int> CountAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken)
+        public virtual async ValueTask<int> CountAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken = default)
         {
             return await _dbSet.Where(predicate).CountAsync(cancellationToken);
         }
 
-        public virtual async ValueTask<bool> ExistsAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken)
+        public virtual async ValueTask<bool> ExistsAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken = default)
         {
             return await _dbSet.AnyAsync(predicate, cancellationToken);
         }
@@ -104,7 +112,13 @@ namespace RestaurantManagement.DAL.Abstraction
             return await query.ToListAsync(cancellationToken);
         }
 
-        public virtual async Task<T> InsertAsync(T entity, CancellationToken cancellationToken)
+        public async Task<T> GetByIdAsync(int id)
+        {
+            var data =await GetAsync<T>(x => x.Id == id,CancellationToken.None);
+            return data.SingleOrDefault();
+        }
+
+        public virtual T Insert(T entity, CancellationToken cancellationToken = default)
         {
             if (entity is IRestaurant)
                 if (((IRestaurant)entity).RestaurantId != ((IRestaurant)entity).RestaurantId
@@ -128,11 +142,11 @@ namespace RestaurantManagement.DAL.Abstraction
                 ((IAuditMetadata)entity).CreatedByUserId = _authService.GetUserId();
             }
 
-            await _dbSet.AddAsync(entity, cancellationToken);
+            _dbSet.Add(entity);
             return entity;
         }
 
-        public virtual async Task RemoveAsync(int id, CancellationToken cancellationToken)
+        public virtual async Task RemoveAsync(int id, CancellationToken cancellationToken = default)
         {
             var entity = await _dbSet.FindAsync(id);
 
@@ -145,7 +159,7 @@ namespace RestaurantManagement.DAL.Abstraction
                 Remove(entity, cancellationToken);
         }
 
-        public virtual void Remove(T entity, CancellationToken cancellationToken)
+        public virtual void Remove(T entity, CancellationToken cancellationToken = default)
         {
             if (entity is IRestaurant)
                 if (((IRestaurant)entity).RestaurantId != ((IRestaurant)entity).RestaurantId
@@ -155,7 +169,7 @@ namespace RestaurantManagement.DAL.Abstraction
             _dbContext.Entry<T>(entity).State = EntityState.Deleted;
         }
 
-        public virtual Task<T> UpdateAsync(T entityToUpdate, CancellationToken cancellationToken)
+        public virtual T Update(T entityToUpdate, CancellationToken cancellationToken = default)
         {
             if (entityToUpdate is IRestaurant)
                 if (((IRestaurant)entityToUpdate).RestaurantId != ((IRestaurant)entityToUpdate).RestaurantId
@@ -175,7 +189,7 @@ namespace RestaurantManagement.DAL.Abstraction
 
             _dbContext.Update(entityToUpdate);
 
-            return Task.FromResult(entityToUpdate);
+            return entityToUpdate;
         }
     }
 }

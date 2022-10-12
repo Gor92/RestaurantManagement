@@ -26,4 +26,12 @@ namespace RestaurantManagement.Core
         Order,
         OrderDetails
     }
+
+    public enum ErrorType
+    {
+        InvalidOperation,
+        NotFound,
+        UnAuthorized,
+        ValidationFailed
+    }
 }

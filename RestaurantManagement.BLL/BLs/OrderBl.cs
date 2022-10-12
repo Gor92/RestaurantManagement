@@ -1,5 +1,4 @@
 ﻿using RestaurantManagement.Core.Entities;
-using System.ComponentModel.DataAnnotations;
 using RestaurantManagement.Core.Services.Contracts;
 using RestaurantManagement.Core.Repositories.Contracts;
 using RestaurantManagement.Core.Services.Contracts.BLs;
@@ -8,13 +7,15 @@ namespace RestaurantManagement.BLL.BLs
 {
     public class OrderBL : IOrderBL
     {
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly IOrderRepository _orderRepository;
         private readonly IOrderDetailsBL _orderDetailsBL;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public OrderBL(IUnitOfWork unitOfWork, IOrderDetailsBL orderDetailsBl)
+        public OrderBL(IUnitOfWork unitOfWork, IOrderRepository orderRepository, IOrderDetailsBL orderDetailsBl)
         {
-            _unitOfWork = unitOfWork;
+            _orderRepository = orderRepository;
             _orderDetailsBL = orderDetailsBl;
+            _unitOfWork = unitOfWork;
         }
         public async Task<Order> AddAsync(int userId, Order order, IEnumerable<OrderDetails> orderDetails, CancellationToken cancellationToken)
         {
@@ -26,7 +27,9 @@ namespace RestaurantManagement.BLL.BLs
                 order.TotalPrice = CalculateOrderSum(orderDetails);
                 order.IsPaid = false;
 
-                await _unitOfWork.OrderRepository.InsertAsync(order, cancellationToken);
+                _orderRepository.Insert(order, cancellationToken);
+
+                await _unitOfWork.CommitTransactionAsync(cancellationToken);
 
                 await _unitOfWork.SaveChangesAsync(cancellationToken);
 

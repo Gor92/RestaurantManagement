@@ -22,7 +22,11 @@ builder.Services.AddDefaultData(builder.Configuration);
 builder.Services.AddScoped<IOrderBL, OrderBL>();
 builder.Services.Decorate<IOrderBL, OrderBlProxy>();
 
-builder.Services.AddScoped<IOrderBL, OrderBL>();
+builder.Services.AddScoped<IRestaurantBL, RestaurantBL>();
+builder.Services.AddScoped<IOrderDetailsBL, OrderDetailsBL>();
+builder.Services.Decorate<IOrderDetailsBL, OrderDetailsBlProxy>();
+
+
 builder.Services.AddScoped<IAccessControlService, AccessControlService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IJWTTokenService, JWTTokenService>();
@@ -34,7 +38,6 @@ builder.Services.AddSwaggerGen();
 var app = builder.Build();
 
 
-//UpdateDatabase();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -49,12 +52,16 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+UpdateDatabase();
 
 app.Run();
 
 
-//void UpdateDatabase()
-//{
-//    var dbContext = app.Services.GetRequiredService<RestaurantManagementContext>();
-//    dbContext?.Database.Migrate();
-//}
+void UpdateDatabase()
+{
+    using (var scope = app.Services.CreateScope())
+    {
+        var context = scope.ServiceProvider.GetRequiredService<RestaurantManagementContext>();
+        context?.Database.Migrate();
+    }
+}

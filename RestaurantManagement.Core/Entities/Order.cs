@@ -6,8 +6,8 @@ namespace RestaurantManagement.Core.Entities
     {
         public int TableId { get; set; }
         public int RestaurantId { get; set; }
-        public DateTime CreateDate { get; set; }
-        public DateTime UpdateDate { get; set; }
+        public DateTimeOffset CreateDate { get; set; }
+        public DateTimeOffset UpdateDate { get; set; }
         public int CreatedByUserId { get; set; }
         public int UpdatedByUserId { get; set; }
         public decimal TotalPrice { get; set; }

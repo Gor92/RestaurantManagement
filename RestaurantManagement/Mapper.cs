@@ -15,6 +15,12 @@ namespace RestaurantManagement.API
             {
                 cfg.CreateMap<OrderReadonlyViewModel, Order>();
                 cfg.CreateMap<OrderDetailsReadonlyViewModel, OrderDetails>();
+
+                cfg.CreateMap<Restaurant, RestaurantReadonlyViewModel>();
+                cfg.CreateMap<Table, TableReadonlyViewModel>();
+
+
+
                 //cfg.CreateMap<A, B>().ConvertUsing<MyConvertor>();
             });
             _mapper = config.CreateMapper();

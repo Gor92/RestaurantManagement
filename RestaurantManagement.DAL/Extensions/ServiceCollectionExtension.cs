@@ -1,5 +1,7 @@
 ﻿using System;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using RestaurantManagement.Core.Models;
 using RestaurantManagement.DAL.Database;
 using Microsoft.Extensions.Configuration;
 using RestaurantManagement.DAL.Repositories;
@@ -15,24 +17,25 @@ namespace RestaurantManagement.DAL.Extensions
     {
         public static void AddDefaultData(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddDbContext<CommonContext>(options => options.UseSqlServer(configuration.GetConnectionString("DefaultConnectionString")));
-            services.AddScoped<IRestaurantSettingsRepository, RestaurantSettingsRepository>();
+            services.AddDbContext<CommonContext>(options => options.UseSqlServer(configuration.GetSection("DefaultConnectionString").Value));
             services.AddTenantIdentification();
-            
-            services.AddDbContext<RestaurantManagementContext>(async (sp, options) =>
-            {
-                var service = sp.GetRequiredService<ITenantService>();
-                var tenantContext = await service.GetTenantAsync(CancellationToken.None);
 
-                options.UseSqlServer("Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Users\\User\\Source\\Repos\\Gor92\\RestaurantManagement\\RestaurantManagement.Data\\DatabaseFile\\RestaurantManagement.mdf;Integrated Security=True");
-               
-                var dbContext = sp.GetRequiredService<RestaurantManagementContext>();
-                dbContext?.Database.Migrate();
-            },
+            services.AddDbContext<RestaurantManagementContext>(async (sp, options) =>
+                {
+                    var httpContextAccessor = sp.GetRequiredService<IHttpContextAccessor>();
+                    TenantContext tenantContext = null; 
+                    if (httpContextAccessor.HttpContext != null)
+                    {
+                        var service = sp.GetRequiredService<ITenantService>();
+                        tenantContext = await service.GetTenantAsync(CancellationToken.None);
+                    }
+
+                    options.UseSqlServer(tenantContext?.ConnectionString ?? configuration.GetSection("DefaultConnectionString").Value);
+                },
             contextLifetime: ServiceLifetime.Scoped,
             optionsLifetime: ServiceLifetime.Scoped);
 
-       
+            services.AddScoped<IRestaurantSettingsRepository, RestaurantSettingsRepository>();
 
             services.AddScoped<IOrderDetailsRepository, OrderDetailsRepository>();
             services.AddScoped<IOrderRepository, OrderRepository>();

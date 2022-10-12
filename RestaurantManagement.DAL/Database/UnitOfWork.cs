@@ -1,6 +1,7 @@
 ﻿using System.Data;
 using Microsoft.EntityFrameworkCore;
 using System.Runtime.InteropServices;
+using Microsoft.EntityFrameworkCore.Storage;
 using RestaurantManagement.Core.Services.Contracts;
 using RestaurantManagement.Core.Repositories.Contracts;
 
@@ -8,71 +9,32 @@ namespace RestaurantManagement.DAL.Database
 {
     public class UnitOfWork : IUnitOfWork, IDisposable
     {
+        private readonly RestaurantManagementContext _dbContext;
+        private IDbContextTransaction? _transaction;
         private bool _disposedValue;
-        private readonly IOrderRepository _orderRepository;
-        private readonly IOrderDetailsRepository _orderDetailsRepository;
-        //private readonly IPermissionRepository _permissionRepository;
-        private readonly IProductRepository _productRepository;
-        private readonly IRestaurantRepository _restaurantRepository;
-        private readonly IRolePermissionRepository _rolePermissionRepository;
-        private readonly IRoleRepository _roleRepository;
-        private readonly ITableRepository _tableRepository;
-        private readonly IUserRepository _userRepository;
-        private readonly IUserRolePermissionRepository _userRolePermissionRepository;
-        private readonly DbContext _dbContext;
-
-        public UnitOfWork(IOrderRepository orderRepository,
-                          IOrderDetailsRepository orderDetailsRepository,
-                          //IPermissionRepository permissionRepository,
-                          IProductRepository productRepository,
-                          IRestaurantRepository restaurantRepository,
-                          IRolePermissionRepository rolePermissionRepository,
-                          IRoleRepository roleRepository,
-                          ITableRepository tableRepository,
-                          IUserRepository userRepository,
-                          IUserRolePermissionRepository userRolePermissionRepository,
-                          DbContext dbContext)
+        public UnitOfWork(RestaurantManagementContext dbContext)
         {
-            _orderRepository = orderRepository;
-            _orderDetailsRepository = orderDetailsRepository;
-           // _permissionRepository = permissionRepository;
-            _productRepository = productRepository;
-            _restaurantRepository = restaurantRepository;
-            _rolePermissionRepository = rolePermissionRepository;
-            _roleRepository = roleRepository;
-            _tableRepository = tableRepository;
-            _userRepository = userRepository;
-            _userRolePermissionRepository = userRolePermissionRepository;
             _dbContext = dbContext;
         }
-
-        public IOrderRepository OrderRepository { get { return _orderRepository; } }
-        public IOrderDetailsRepository OrderDetailsRepository { get { return _orderDetailsRepository; } }
-        //public IPermissionRepository PermissionRepository { get { return _permissionRepository; } }
-        public IProductRepository ProductRepository { get { return _productRepository; } }
-        public IRestaurantRepository RestaurantRepository { get { return _restaurantRepository; } }
-        public IRolePermissionRepository RolePermissionRepository { get { return _rolePermissionRepository; } }
-        public IRoleRepository RoleRepository { get { return _roleRepository; } }
-        public ITableRepository TableRepository { get { return _tableRepository; } }
-        public IUserRepository UserRepository { get { return _userRepository; } }
-        public IUserRolePermissionRepository UserRolePermissionRepository { get { return _userRolePermissionRepository; } }
-
-        public async Task BeginTransactionAsync(CancellationToken cancellationToken)
+        
+        public async Task BeginTransactionAsync(CancellationToken cancellationToken = default)
         {
-            await _dbContext.Database.BeginTransactionAsync(IsolationLevel.ReadCommitted, cancellationToken);
+            _transaction = await _dbContext.Database.BeginTransactionAsync(IsolationLevel.ReadCommitted, cancellationToken);
         }
 
-        public async Task RollbackTransactionAsync(CancellationToken cancellationToken)
+        public async Task RollbackTransactionAsync(CancellationToken cancellationToken = default)
         {
             await _dbContext.Database.RollbackTransactionAsync(cancellationToken);
+            DisposeTransaction();
         }
 
-        public async Task CommitTransactionAsync(CancellationToken cancellationToken)
+        public async Task CommitTransactionAsync(CancellationToken cancellationToken = default)
         {
             await _dbContext.Database.CommitTransactionAsync(cancellationToken);
+            DisposeTransaction();
         }
 
-        public async Task SaveChangesAsync(CancellationToken cancellationToken)
+        public async Task SaveChangesAsync(CancellationToken cancellationToken = default)
         {
             await _dbContext.SaveChangesAsync(cancellationToken);
         }
@@ -80,6 +42,7 @@ namespace RestaurantManagement.DAL.Database
         public void Dispose()
         {
             Dispose(true);
+            GC.SuppressFinalize(this);
         }
 
         protected virtual void Dispose(bool disposing)
@@ -88,11 +51,17 @@ namespace RestaurantManagement.DAL.Database
             {
                 if (disposing)
                 {
-                    this.Dispose();
+                    DisposeTransaction();
                 }
 
                 _disposedValue = true;
             }
+        }
+
+        private void DisposeTransaction()
+        {
+            _transaction?.Dispose();
+            _transaction = null;
         }
     }
 }

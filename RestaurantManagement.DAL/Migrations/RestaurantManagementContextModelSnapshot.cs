@@ -30,11 +30,14 @@ namespace RestaurantManagement.DAL.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<DateTime>("CreateDate")
-                        .HasColumnType("datetime2");
+                    b.Property<DateTimeOffset>("CreateDate")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<int>("CreatedByUserId")
                         .HasColumnType("int");
+
+                    b.Property<bool>("IsPaid")
+                        .HasColumnType("bit");
 
                     b.Property<int>("RestaurantId")
                         .HasColumnType("int");
@@ -50,8 +53,8 @@ namespace RestaurantManagement.DAL.Migrations
                     b.Property<decimal>("TotalPrice")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<DateTime>("UpdateDate")
-                        .HasColumnType("datetime2");
+                    b.Property<DateTimeOffset>("UpdateDate")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<int>("UpdatedByUserId")
                         .HasColumnType("int");
@@ -77,8 +80,8 @@ namespace RestaurantManagement.DAL.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<DateTime>("CreateDate")
-                        .HasColumnType("datetime2");
+                    b.Property<DateTimeOffset>("CreateDate")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<int>("CreatedByUserId")
                         .HasColumnType("int");
@@ -93,6 +96,9 @@ namespace RestaurantManagement.DAL.Migrations
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
 
+                    b.Property<decimal>("ProductPrice")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
@@ -102,8 +108,8 @@ namespace RestaurantManagement.DAL.Migrations
                     b.Property<long>("RowVersion")
                         .HasColumnType("bigint");
 
-                    b.Property<DateTime>("UpdateDate")
-                        .HasColumnType("datetime2");
+                    b.Property<DateTimeOffset>("UpdateDate")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<int>("UpdatedByUserId")
                         .HasColumnType("int");
@@ -133,8 +139,8 @@ namespace RestaurantManagement.DAL.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<DateTime>("CreateDate")
-                        .HasColumnType("datetime2");
+                    b.Property<DateTimeOffset>("CreateDate")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<int>("CreatedByUserId")
                         .HasColumnType("int");
@@ -158,8 +164,8 @@ namespace RestaurantManagement.DAL.Migrations
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("bigint");
 
-                    b.Property<DateTime>("UpdateDate")
-                        .HasColumnType("datetime2");
+                    b.Property<DateTimeOffset>("UpdateDate")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<int>("UpdatedByUserId")
                         .HasColumnType("int");
@@ -218,7 +224,7 @@ namespace RestaurantManagement.DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Restaurant");
+                    b.ToTable("Restaurants");
                 });
 
             modelBuilder.Entity("RestaurantManagement.Core.Entities.Role", b =>
@@ -313,8 +319,8 @@ namespace RestaurantManagement.DAL.Migrations
                     b.Property<DateTime>("BirthDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("CreateDate")
-                        .HasColumnType("datetime2");
+                    b.Property<DateTimeOffset>("CreateDate")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -362,8 +368,8 @@ namespace RestaurantManagement.DAL.Migrations
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("bigint");
 
-                    b.Property<DateTime>("UpdateDate")
-                        .HasColumnType("datetime2");
+                    b.Property<DateTimeOffset>("UpdateDate")
+                        .HasColumnType("datetimeoffset");
 
                     b.HasKey("Id");
 

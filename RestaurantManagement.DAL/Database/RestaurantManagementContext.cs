@@ -5,6 +5,7 @@ namespace RestaurantManagement.DAL.Database
 {
     public class RestaurantManagementContext : DbContext
     {
+        public DbSet<Restaurant> Restaurants { get; set; }
         public DbSet<Order> Order { get; set; }
         public DbSet<Product> Product { get; set; }
         public DbSet<Table> Table { get; set; }
@@ -19,9 +20,9 @@ namespace RestaurantManagement.DAL.Database
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            DataSeed.DataSeed.Execute(modelBuilder);
+
             //Order
-            modelBuilder.Entity<Order>().HasKey(x => x.Id);
-            modelBuilder.Entity<Order>().Property(x => x.Id).ValueGeneratedOnAdd();
             modelBuilder.Entity<Order>().Property(x => x.RowVersion).IsRowVersion();
 
             modelBuilder.Entity<Order>().HasMany(x => x.OrderDetails)
@@ -50,8 +51,6 @@ namespace RestaurantManagement.DAL.Database
                                        .OnDelete(DeleteBehavior.NoAction);
 
             //Product
-            modelBuilder.Entity<Product>().HasKey(x => x.Id);
-            modelBuilder.Entity<Product>().Property(x => x.Id).ValueGeneratedOnAdd();
             modelBuilder.Entity<Product>().Property(x => x.RowVersion).IsRowVersion();
 
             modelBuilder.Entity<Product>().HasOne(x => x.Restaurant)
@@ -84,13 +83,9 @@ namespace RestaurantManagement.DAL.Database
                                         .OnDelete(DeleteBehavior.NoAction);
 
             //User
-            modelBuilder.Entity<User>().HasKey(x => x.Id);
-            modelBuilder.Entity<User>().Property(x => x.Id).ValueGeneratedOnAdd();
             modelBuilder.Entity<User>().Property(x => x.RowVersion).IsRowVersion();
 
             //Role
-            modelBuilder.Entity<Role>().HasKey(x => x.Id);
-            modelBuilder.Entity<Role>().Property(x => x.Id).ValueGeneratedOnAdd();
             modelBuilder.Entity<Role>().Property(x => x.RowVersion).IsRowVersion();
 
             ////Permission
@@ -99,8 +94,6 @@ namespace RestaurantManagement.DAL.Database
             //modelBuilder.Entity<Permission>().Property(x => x.RowVersion).IsRowVersion();
 
             //UserRolePermission
-            modelBuilder.Entity<UserRolePermission>().HasKey(x => x.Id);
-            modelBuilder.Entity<UserRolePermission>().Property(x => x.Id).ValueGeneratedOnAdd();
             modelBuilder.Entity<UserRolePermission>().Property(x => x.RowVersion).IsRowVersion();
         }
 

@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace RestaurantManagement.DAL.Migrations
 {
-    public partial class initialmigration : Migration
+    public partial class InitalMigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -26,7 +26,7 @@ namespace RestaurantManagement.DAL.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Restaurant",
+                name: "Restaurants",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -36,7 +36,7 @@ namespace RestaurantManagement.DAL.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Restaurant", x => x.Id);
+                    table.PrimaryKey("PK_Restaurants", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -69,8 +69,8 @@ namespace RestaurantManagement.DAL.Migrations
                     MobilePhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Login = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreateDate = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
+                    UpdateDate = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
                     IsLocked = table.Column<bool>(type: "bit", nullable: false),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false),
                     RestaurantId = table.Column<int>(type: "int", nullable: false),
@@ -120,9 +120,9 @@ namespace RestaurantManagement.DAL.Migrations
                 {
                     table.PrimaryKey("PK_Table", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Table_Restaurant_RestaurantId",
+                        name: "FK_Table_Restaurants_RestaurantId",
                         column: x => x.RestaurantId,
-                        principalTable: "Restaurant",
+                        principalTable: "Restaurants",
                         principalColumn: "Id");
                 });
 
@@ -160,17 +160,17 @@ namespace RestaurantManagement.DAL.Migrations
                     RestaurantId = table.Column<int>(type: "int", nullable: false),
                     CreatedByUserId = table.Column<int>(type: "int", nullable: false),
                     UpdatedByUserId = table.Column<int>(type: "int", nullable: false),
-                    CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreateDate = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
+                    UpdateDate = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
                     RowVersion = table.Column<long>(type: "bigint", rowVersion: true, nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Product", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Product_Restaurant_RestaurantId",
+                        name: "FK_Product_Restaurants_RestaurantId",
                         column: x => x.RestaurantId,
-                        principalTable: "Restaurant",
+                        principalTable: "Restaurants",
                         principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Product_User_CreatedByUserId",
@@ -192,20 +192,21 @@ namespace RestaurantManagement.DAL.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     TableId = table.Column<int>(type: "int", nullable: false),
                     RestaurantId = table.Column<int>(type: "int", nullable: false),
-                    CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreateDate = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
+                    UpdateDate = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
                     CreatedByUserId = table.Column<int>(type: "int", nullable: false),
                     UpdatedByUserId = table.Column<int>(type: "int", nullable: false),
                     TotalPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    IsPaid = table.Column<bool>(type: "bit", nullable: false),
                     RowVersion = table.Column<long>(type: "bigint", rowVersion: true, nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Order", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Order_Restaurant_RestaurantId",
+                        name: "FK_Order_Restaurants_RestaurantId",
                         column: x => x.RestaurantId,
-                        principalTable: "Restaurant",
+                        principalTable: "Restaurants",
                         principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Order_Table_TableId",
@@ -232,11 +233,12 @@ namespace RestaurantManagement.DAL.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     OrderId = table.Column<int>(type: "int", nullable: false),
                     ProductId = table.Column<int>(type: "int", nullable: false),
+                    ProductPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Quantity = table.Column<int>(type: "int", nullable: false),
                     Note = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     RestaurantId = table.Column<int>(type: "int", nullable: false),
-                    CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreateDate = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
+                    UpdateDate = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
                     CreatedByUserId = table.Column<int>(type: "int", nullable: false),
                     UpdatedByUserId = table.Column<int>(type: "int", nullable: false),
                     UserId = table.Column<int>(type: "int", nullable: false),
@@ -256,9 +258,9 @@ namespace RestaurantManagement.DAL.Migrations
                         principalTable: "Product",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_OrderDetails_Restaurant_RestaurantId",
+                        name: "FK_OrderDetails_Restaurants_RestaurantId",
                         column: x => x.RestaurantId,
-                        principalTable: "Restaurant",
+                        principalTable: "Restaurants",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -371,7 +373,7 @@ namespace RestaurantManagement.DAL.Migrations
                 name: "User");
 
             migrationBuilder.DropTable(
-                name: "Restaurant");
+                name: "Restaurants");
         }
     }
 }
