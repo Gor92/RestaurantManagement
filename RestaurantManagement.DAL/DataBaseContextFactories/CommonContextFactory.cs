@@ -9,14 +9,14 @@ using Microsoft.EntityFrameworkCore.Design;
 
 namespace RestaurantManagement.DAL.DataBaseContextFactories
 {
-    public class RestaurantManagmentContextFactory : IDesignTimeDbContextFactory<RestaurantManagementContext>
+    public class CommonContextFactory : IDesignTimeDbContextFactory<CommonContext>
     {
-        public RestaurantManagementContext CreateDbContext(string[] args)
+        public CommonContext CreateDbContext(string[] args)
         {
-            var optionsBuilder = new DbContextOptionsBuilder<RestaurantManagementContext>();
+            var optionsBuilder = new DbContextOptionsBuilder<CommonContext>();
             optionsBuilder.UseSqlServer("Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Users\\User\\Source\\Repos\\Gor92\\RestaurantManagement\\RestaurantManagement.Data\\DatabaseFile\\RestaurantManagement.mdf;Integrated Security=True");
 
-            return new RestaurantManagementContext(optionsBuilder.Options);
+            return new CommonContext(optionsBuilder.Options);
         }
     }
 }
