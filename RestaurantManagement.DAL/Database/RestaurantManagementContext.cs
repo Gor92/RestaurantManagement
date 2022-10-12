@@ -25,7 +25,7 @@ namespace RestaurantManagement.DAL.Database
             DataSeed.DataSeed.Execute(modelBuilder);
 
             //Order
-            modelBuilder.Entity<Order>().Property(x => x.RowVersion).IsRowVersion();
+            modelBuilder.Entity<Order>().Property(x => x.RowVersion).IsRowVersion().IsConcurrencyToken();
 
             modelBuilder.Entity<Order>().HasMany(x => x.OrderDetails)
                                         .WithOne(x => x.Order)
@@ -53,7 +53,7 @@ namespace RestaurantManagement.DAL.Database
                                        .OnDelete(DeleteBehavior.NoAction);
 
             //Product
-            modelBuilder.Entity<Product>().Property(x => x.RowVersion).IsRowVersion();
+            modelBuilder.Entity<Product>().Property(x => x.RowVersion).IsRowVersion().IsConcurrencyToken();
 
             modelBuilder.Entity<Product>().HasOne(x => x.Restaurant)
                                           .WithMany(x => x.Products)
@@ -77,7 +77,7 @@ namespace RestaurantManagement.DAL.Database
             //Table
             modelBuilder.Entity<Table>().HasKey(x => x.Id);
             modelBuilder.Entity<Table>().Property(x => x.Id).ValueGeneratedOnAdd();
-            modelBuilder.Entity<Table>().Property(x => x.RowVersion).IsRowVersion();
+            modelBuilder.Entity<Table>().Property(x => x.RowVersion).IsRowVersion().IsConcurrencyToken();
 
             modelBuilder.Entity<Table>().HasOne(x => x.Restaurant)
                                         .WithMany(x => x.Tables)
@@ -85,10 +85,10 @@ namespace RestaurantManagement.DAL.Database
                                         .OnDelete(DeleteBehavior.NoAction);
 
             //User
-            modelBuilder.Entity<User>().Property(x => x.RowVersion).IsRowVersion();
+            modelBuilder.Entity<User>().Property(x => x.RowVersion).IsRowVersion().IsConcurrencyToken();
 
             //Role
-            modelBuilder.Entity<Role>().Property(x => x.RowVersion).IsRowVersion();
+            modelBuilder.Entity<Role>().Property(x => x.RowVersion).IsRowVersion().IsConcurrencyToken();
 
             ////Permission
             //modelBuilder.Entity<Permission>().HasKey(x => x.Id);
@@ -96,7 +96,7 @@ namespace RestaurantManagement.DAL.Database
             //modelBuilder.Entity<Permission>().Property(x => x.RowVersion).IsRowVersion();
 
             //UserRolePermission
-            modelBuilder.Entity<UserRolePermission>().Property(x => x.RowVersion).IsRowVersion();
+            modelBuilder.Entity<UserRolePermission>().Property(x => x.RowVersion).IsRowVersion().IsConcurrencyToken();
         }
 
         //protected override void OnConfiguring(DbContextOptionsBuilder options)
