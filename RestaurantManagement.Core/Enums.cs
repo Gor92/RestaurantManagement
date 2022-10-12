@@ -23,6 +23,15 @@ namespace RestaurantManagement.Core
     public enum ResourceType
     {
         Undefined,
-        Order
+        Order,
+        OrderDetails
+    }
+
+    public enum ErrorType
+    {
+        InvalidOperation,
+        NotFound,
+        UnAuthorized,
+        ValidationFailed
     }
 }

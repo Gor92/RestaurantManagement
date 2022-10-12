@@ -10,7 +10,6 @@ namespace RestaurantManagement.DAL.Repositories
     {
         public UserRepository(RestaurantManagementContext context, IAuthService authService) : base(context, authService)
         {
-
         }
     }
 }

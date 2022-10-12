@@ -20,7 +20,7 @@ namespace RestaurantManagement.Core.Services.Implementation
 
         public async Task ValidateAccessByUserAsync(int userId, IEnumerable<Permission> resourceAccesses, CancellationToken cancellationToken)
         {
-            var userPermissions = await _userRolePermissionRepository.GetAsync(x => x.UserId == userId, cancellationToken);
+            var userPermissions = await _userRolePermissionRepository.GetAsync<User>(x => x.UserId == userId, cancellationToken);
             ValidateAccessAsync(userPermissions.Select(x => new Permission() { AccessLevel = x.AccessLevel, Resource = x.Resource }).ToList(), resourceAccesses);
         }
 
@@ -31,7 +31,7 @@ namespace RestaurantManagement.Core.Services.Implementation
 
         public async Task ValidateAccessAsync(int userId, Type classType, string methodName, CancellationToken cancellationToken)
         {
-            var permissions = (await _userRolePermissionRepository.GetAsync(x => x.UserId == userId, cancellationToken))
+            var permissions = (await _userRolePermissionRepository.GetAsync<User>(x => x.UserId == userId, cancellationToken))
                               .Select(x => new Permission() { AccessLevel = x.AccessLevel, Resource = x.Resource })
                               .ToList();
             var neededPermissions = GetAccess(classType.GetMethod(methodName)!, classType);

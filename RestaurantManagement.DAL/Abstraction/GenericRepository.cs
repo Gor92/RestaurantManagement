@@ -1,4 +1,5 @@
-﻿using System.Linq.Expressions;
+﻿using System.Linq;
+using System.Linq.Expressions;
 using RestaurantManagement.Core;
 using Microsoft.EntityFrameworkCore;
 using RestaurantManagement.Core.Entities;
@@ -12,25 +13,34 @@ namespace RestaurantManagement.DAL.Abstraction
     {
         private readonly DbContext _dbContext;
         private readonly IAuthService _authService;
-        private readonly DbSet<T> _dbSet;
+        private protected DbSet<T> DbSet;
 
         public GenericRepository(DbContext dbContext, IAuthService authService)
         {
+            DbSet = dbContext.Set<T>();
             _dbContext = dbContext;
             _authService = authService;
-            _dbSet = dbContext.Set<T>();
         }
 
-        public virtual async void BulkInsert(IEnumerable<T> entities, CancellationToken cancellationToken)
+        public virtual  IEnumerable<T> BulkInsert(IEnumerable<T> entities,
+            CancellationToken cancellationToken = default)
         {
-            await _dbContext.AddRangeAsync(entities, cancellationToken);
+            var list = new List<T>();
+            foreach (var entity in entities)
+                 list.Add(Insert(entity, cancellationToken));
+
+            return list;
         }
 
-        public virtual bool BulkRemove(IEnumerable<T> entities, CancellationToken cancellationToken)
+        public virtual bool BulkRemove(IEnumerable<T> entities, CancellationToken cancellationToken = default)
         {
             try
             {
-                _dbContext.RemoveRange(entities, cancellationToken);
+                foreach (var entity in entities)
+                {
+                    Remove(entity, cancellationToken);
+                }
+
                 return true;
             }
             catch
@@ -39,42 +49,127 @@ namespace RestaurantManagement.DAL.Abstraction
             }
         }
 
-        public virtual void BulkUpdateAsync(IEnumerable<T> entities, CancellationToken cancellationToken)
+        public virtual IEnumerable<T> BulkUpdate(IEnumerable<T> entities,
+            CancellationToken cancellationToken = default)
         {
-            _dbContext.UpdateRange(entities);
+            var list = new List<T>();
+            foreach (var entity in entities)
+            {
+                list.Add(Update(entity, cancellationToken));
+            }
+
+            return list;
         }
 
-        public virtual Task<int> CountAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken)
+        public virtual async ValueTask<int> CountAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            return await DbSet.Where(predicate).CountAsync(cancellationToken);
         }
 
-        public virtual ValueTask<bool> ExistsAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken)
+        public virtual async ValueTask<bool> ExistsAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            return await DbSet.AnyAsync(predicate, cancellationToken);
+        }
+        public virtual IEnumerable<T> GetAll()
+        {
+            return DbSet.AsNoTracking();
         }
 
-        public virtual Task<IEnumerable<T>> GetAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken, int? count = null, int? currentPage = null, string? orderBy = null, SortDirection? sortDirection = null)
+        public virtual async Task<IEnumerable<T>> GetAsync<TKey>(Expression<Func<T, bool>> predicate,
+                                                           CancellationToken cancellationToken,
+                                                           int? count = null,
+                                                           int? currentPage = null,
+                                                           Expression<Func<T, TKey>>? orderBy = null,
+                                                           SortDirection? sortDirection = null,
+                                                           Expression<Func<T, object>>[]? includes = null)
         {
-            throw new NotImplementedException();
+            IQueryable<T> query = DbSet;
+
+            if (predicate is not null)
+                query.Where(predicate);
+
+            if (orderBy is not null)
+            {
+                if (sortDirection is not null && sortDirection == SortDirection.Asc)
+                    query = query.OrderBy(orderBy);
+                if (sortDirection is not null && sortDirection == SortDirection.Desc)
+                    query = query.OrderByDescending(orderBy);
+            }
+
+            if (count is not null)
+            {
+                if (currentPage is not null)
+                    query.Skip(((int)currentPage) * (int)count).Take((int)count);
+                else query.Take((int)count);
+            }
+
+            if (includes is not null)
+                foreach (var include in includes)
+                {
+                    query = query.Include(include);
+                }
+
+            return await query.ToListAsync(cancellationToken);
         }
 
-        public virtual Task<T> InsertAsync(T entity, CancellationToken cancellationToken)
+        public async Task<T> GetByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            var data =await GetAsync<T>(x => x.Id == id,CancellationToken.None);
+            return data.SingleOrDefault();
         }
 
-        public virtual Task RemoveAsync(string id, CancellationToken cancellationToken)
+        public virtual T Insert(T entity, CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            if (entity is IRestaurant)
+                if (((IRestaurant)entity).RestaurantId != ((IRestaurant)entity).RestaurantId
+                    && _authService.GetRoleName() != "SuperAdmin")
+                    throw new InvalidOperationException("insufficient privileges to update entity");
+
+            if (entity is null)
+            {
+                throw new Exception();
+            }
+
+            if (entity is IDateMetadata)
+            {
+                ((IDateMetadata)entity).UpdateDate = _authService.GetSystemDate();
+                ((IDateMetadata)entity).CreateDate = _authService.GetSystemDate();
+            }
+
+            if (entity is IAuditMetadata)
+            {
+                ((IAuditMetadata)entity).UpdatedByUserId = _authService.GetUserId();
+                ((IAuditMetadata)entity).CreatedByUserId = _authService.GetUserId();
+            }
+
+            DbSet.Add(entity);
+            return entity;
         }
 
-        public virtual Task RemoveAsync(T entity, CancellationToken cancellationToken)
+        public virtual async Task RemoveAsync(int id, CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            var entity = await DbSet.FindAsync(id);
+
+            if (entity is IRestaurant)
+                if (((IRestaurant)entity).RestaurantId != ((IRestaurant)entity).RestaurantId
+                    && _authService.GetRoleName() != "SuperAdmin")
+                    throw new InvalidOperationException("insufficient privileges to update entity");
+
+            if (entity != null)
+                Remove(entity, cancellationToken);
         }
 
-        public virtual Task<T> UpdateAsync(T entityToUpdate, CancellationToken cancellationToken)
+        public virtual void Remove(T entity, CancellationToken cancellationToken = default)
+        {
+            if (entity is IRestaurant)
+                if (((IRestaurant)entity).RestaurantId != ((IRestaurant)entity).RestaurantId
+                    && _authService.GetRoleName() != "SuperAdmin")
+                    throw new InvalidOperationException("insufficient privileges to update entity");
+
+            _dbContext.Entry<T>(entity).State = EntityState.Deleted;
+        }
+
+        public virtual T Update(T entityToUpdate, CancellationToken cancellationToken = default)
         {
             if (entityToUpdate is IRestaurant)
                 if (((IRestaurant)entityToUpdate).RestaurantId != ((IRestaurant)entityToUpdate).RestaurantId
@@ -94,7 +189,7 @@ namespace RestaurantManagement.DAL.Abstraction
 
             _dbContext.Update(entityToUpdate);
 
-            return Task.FromResult(entityToUpdate);
+            return entityToUpdate;
         }
     }
 }

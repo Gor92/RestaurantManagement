@@ -13,10 +13,16 @@ namespace RestaurantManagement.Core.Entities
         public string MobilePhoneNumber { get; set; }
         public string Login { get; set; }
         public string Password { get; set; }
-        public DateTime CreateDate { get; set; }
-        public DateTime UpdateDate { get; set; }
+        public DateTimeOffset CreateDate { get; set; }
+        public DateTimeOffset UpdateDate { get; set; }
         public bool IsLocked { get; set; }
         public bool IsDeleted { get; set; }
         public int RestaurantId { get; set; }
+        public virtual ICollection<Order> CreatedOrders { get; set; }
+        public virtual ICollection<Order> UpdatedOrders { get; set; }
+        public virtual ICollection<OrderDetails> OrderDetails { get; set; }
+        public virtual ICollection<Product> CreatedProducts { get; set; }
+        public virtual ICollection<Product> UpdatedProducts { get; set; }
+
     }
 }

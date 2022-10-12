@@ -6,11 +6,11 @@ using RestaurantManagement.Core.Repositories.Contracts;
 
 namespace RestaurantManagement.DAL.Repositories
 {
-    public class PermissionRepository : GenericRepository<Permission>, IPermissionRepository
-    {
-        public PermissionRepository(RestaurantManagementContext context, IAuthService authService) : base(context, authService)
-        {
+    //public class PermissionRepository : GenericRepository<Permission>, IPermissionRepository
+    //{
+    //    public PermissionRepository(RestaurantManagementContext context, IAuthService authService) : base(context, authService)
+    //    {
 
-        }
-    }
+    //    }
+    //}
 }

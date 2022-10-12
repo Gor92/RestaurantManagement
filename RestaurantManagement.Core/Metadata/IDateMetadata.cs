@@ -2,7 +2,7 @@
 {
     public interface IDateMetadata
     {
-        DateTime CreateDate { get; set; }
-        DateTime UpdateDate { get; set; }
+        DateTimeOffset CreateDate { get; set; }
+        DateTimeOffset UpdateDate { get; set; }
     }
 }

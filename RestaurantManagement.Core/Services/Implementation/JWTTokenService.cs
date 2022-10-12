@@ -9,7 +9,6 @@ namespace RestaurantManagement.Core.Services.Implementation
     public class JWTTokenService : IJWTTokenService
     {
         private readonly TokenModel _tokenModel;
-        private readonly HttpContext _httpContext;
         public JWTTokenService(IOptions<TokenModel> options)
         {
             _tokenModel = options.Value ?? throw new ArgumentNullException(nameof(options.Value));
