@@ -10,7 +10,6 @@ namespace RestaurantManagement.DAL.Repositories
     {
         public RoleRepository(RestaurantManagementContext context, IAuthService authService) : base(context, authService)
         {
-            DbSet = context.Roles;
         }
     }
 }

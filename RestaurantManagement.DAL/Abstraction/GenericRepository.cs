@@ -17,6 +17,7 @@ namespace RestaurantManagement.DAL.Abstraction
 
         public GenericRepository(DbContext dbContext, IAuthService authService)
         {
+            DbSet = dbContext.Set<T>();
             _dbContext = dbContext;
             _authService = authService;
         }
