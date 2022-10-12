@@ -22,7 +22,7 @@ namespace RestaurantManagement.RestaurantIdentification.Services.Implementations
 
         protected override async Task<TenantContext?> GetTenantCoreAsync(Expression<Func<RestaurantSettings, bool>> tenantSelector, CancellationToken cancellationToken)
         {
-            var tenantSetting = (await _restaurantSettingsRepository.GetAsync(tenantSelector, cancellationToken)).First();
+            var tenantSetting = (await _restaurantSettingsRepository.GetAsync<RestaurantSettings>(tenantSelector, cancellationToken)).First();
 
             return new TenantContext()
             {
