@@ -20,7 +20,7 @@ namespace RestaurantManagement.DAL.Database
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            DataSeed.DataSeed.Execute(modelBuilder);
+            //DataSeed.DataSeed.Execute(modelBuilder);
 
             //Order
             modelBuilder.Entity<Order>().Property(x => x.RowVersion).IsRowVersion();

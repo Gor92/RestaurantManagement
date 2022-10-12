@@ -12,7 +12,7 @@ using RestaurantManagement.DAL.Database;
 namespace RestaurantManagement.DAL.Migrations
 {
     [DbContext(typeof(RestaurantManagementContext))]
-    [Migration("20221012200320_InitalMigration")]
+    [Migration("20221012201003_InitalMigration")]
     partial class InitalMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

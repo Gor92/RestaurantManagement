@@ -63,6 +63,7 @@ namespace RestaurantManagement.DAL.DataSeed
                     Description="drink",
                     Price = 10,
                     RowVersion = 1,
+                    RestaurantId = restaurant.Id,
 
                 },
                 new Product()
@@ -75,7 +76,8 @@ namespace RestaurantManagement.DAL.DataSeed
                     UpdatedByUserId= user.Id,
                     Price = 15,
                     Description = "drink",
-                    RowVersion = 1,
+                    RowVersion = 2,
+                    RestaurantId = restaurant.Id,
 
                 },
                 new Product()
@@ -89,7 +91,7 @@ namespace RestaurantManagement.DAL.DataSeed
                     Price = 20,
                     Description = "drink",
                     RowVersion = 1,
-
+                    RestaurantId = restaurant.Id,
                 },
             });
         }
