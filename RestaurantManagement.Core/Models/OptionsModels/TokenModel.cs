@@ -1,7 +1,10 @@
 ﻿namespace RestaurantManagement.Core.Models.OptionsModels
 {
-    public class TokenModel
+    public class JwtModel
     {
-        public string JWTSecret { get; set; }
+        public string Key { get; set; }
+        public string Issuer { get; set; }
+        public string Audience { get; set; }
+        
     }
 }

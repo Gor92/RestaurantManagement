@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using RestaurantManagement.Core.Models;
 using RestaurantManagement.Core.Entities;
 using RestaurantManagement.API.ViewModels;
 using RestaurantManagement.Core.Services.Contracts;
@@ -18,6 +19,7 @@ namespace RestaurantManagement.API
 
                 cfg.CreateMap<Restaurant, RestaurantReadonlyViewModel>();
                 cfg.CreateMap<Table, TableReadonlyViewModel>();
+                cfg.CreateMap<UserReadonlyViewModel, UserModel>();
 
 
 

@@ -17,7 +17,7 @@ namespace RestaurantManagement.Core.Services.Implementation
             _jWtTokenService = jWTTokenService;
             _httpContextAccessor = httpContextAccessor;
             _token = new StringValues();
-            if (_httpContextAccessor.HttpContext.Request.Headers.TryGetValue("Authentication", out _token))
+            if (_httpContextAccessor.HttpContext.Request.Headers.TryGetValue("Authorization", out _token))
                 _userModel = _jWtTokenService.DecodeToken(_token.ToString());
             else
             {

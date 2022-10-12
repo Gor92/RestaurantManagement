@@ -18,9 +18,8 @@ namespace RestaurantManagement.RestaurantIdentification.Services.Implementations
 
         public Expression<Func<RestaurantSettings, bool>> GetTenantSelector(HttpContext httpContext)
         {
-            return x => x.RestaurantId == 1;
             StringValues token = "";
-            httpContext.Request.Headers.TryGetValue("Authentication", out token);
+            httpContext.Request.Headers.TryGetValue("Authorization", out token);
 
             if (string.IsNullOrEmpty(token))
                 throw new UnauthorizedAccessException();
