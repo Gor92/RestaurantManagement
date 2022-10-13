@@ -9,19 +9,16 @@ namespace RestaurantManagement.Core.Services.Implementation
     {
         private readonly StringValues _token;
         private readonly UserModel _userModel;
-        private readonly IJWTTokenService _jWtTokenService;
-        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public AuthService(IJWTTokenService jWTTokenService, IHttpContextAccessor httpContextAccessor)
+        public AuthService(IJWTTokenService jWtTokenService, IHttpContextAccessor httpContextAccessor)
         {
-            _jWtTokenService = jWTTokenService;
-            _httpContextAccessor = httpContextAccessor;
+            var httpContextAccessor1 = httpContextAccessor;
             _token = new StringValues();
-            if (_httpContextAccessor.HttpContext.Request.Headers.TryGetValue("Authorization", out _token))
-                _userModel = _jWtTokenService.DecodeToken(_token.ToString());
+            if (httpContextAccessor1.HttpContext != null && httpContextAccessor1.HttpContext.Request.Headers.TryGetValue("Authorization", out _token))
+                _userModel = jWtTokenService.DecodeToken(_token.ToString());
             else
             {
-                _userModel = new UserModel() { RestaurantId = 1, UserId = 1 };
+                throw new UnauthorizedAccessException();
             }
         }
 
