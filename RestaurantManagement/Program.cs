@@ -1,10 +1,9 @@
 using System.Text;
-using RestaurantManagement.API;
 using Microsoft.OpenApi.Models;
+using RestaurantManagement.API;
 using RestaurantManagement.BLL.BLs;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using RestaurantManagement.Core.Models;
 using RestaurantManagement.DAL.Database;
 using RestaurantManagement.DAL.Extensions;
 using RestaurantManagement.BLL.SecureProxies;
@@ -13,7 +12,6 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using RestaurantManagement.Core.Models.OptionsModels;
 using RestaurantManagement.Core.Services.Contracts.BLs;
 using RestaurantManagement.Core.Services.Implementation;
-using RestaurantManagement.RestaurantIdentification.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
@@ -47,7 +45,7 @@ builder.Services.AddOptions()
 
 builder.Services.AddAuthorization();
 
-builder.Services.AddSingleton<IMapper,Mapper>();
+builder.Services.AddSingleton<IMapper, Mapper>();
 
 builder.Services.AddDefaultData(builder.Configuration);
 
@@ -120,11 +118,9 @@ app.Run();
 
 void UpdateDatabase()
 {
-    using (var scope = app.Services.CreateScope())
-    {
-        var context = scope.ServiceProvider.GetRequiredService<RestaurantManagementContext>();
-        context?.Database.Migrate();
-        var commonContext = scope.ServiceProvider.GetRequiredService<CommonContext>();
-        commonContext.Database.Migrate();
-    }
+    using var scope = app.Services.CreateScope();
+    var context = scope.ServiceProvider.GetRequiredService<RestaurantManagementContext>();
+    context.Database.Migrate();
+    var commonContext = scope.ServiceProvider.GetRequiredService<CommonContext>();
+    commonContext.Database.Migrate();
 }
