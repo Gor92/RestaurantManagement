@@ -115,7 +115,7 @@ namespace RestaurantManagement.DAL.Abstraction
             }
 
             if (predicate is not null)
-                query!.Where(predicate);
+                query = query!.Where(predicate);
 
             if (orderBy is not null)
             {
@@ -128,8 +128,9 @@ namespace RestaurantManagement.DAL.Abstraction
             if (count is not null)
             {
                 if (currentPage is not null)
-                    query!.Skip(((int)currentPage) * (int)count).Take((int)count);
-                else query!.Take((int)count);
+                    query = query!.Skip(((int)currentPage) * (int)count).Take((int)count);
+                else 
+                    query = query!.Take((int)count);
             }
 
             if (includes is not null)
@@ -150,7 +151,7 @@ namespace RestaurantManagement.DAL.Abstraction
         public virtual T Insert(T entity, CancellationToken cancellationToken = default)
         {
             if (entity is IRestaurant)
-                if (((IRestaurant)entity).RestaurantId != ((IRestaurant)entity).RestaurantId
+                if (((IRestaurant)entity).RestaurantId != _authService.GetRestaurantId()
                     && _authService.GetRoleName() != "SuperAdmin")
                     throw new InvalidOperationException("insufficient privileges to insert entity");
 
@@ -180,7 +181,7 @@ namespace RestaurantManagement.DAL.Abstraction
             var entity = await DbSet.FindAsync(id);
 
             if (entity is IRestaurant)
-                if (((IRestaurant)entity).RestaurantId != ((IRestaurant)entity).RestaurantId
+                if (((IRestaurant)entity).RestaurantId != _authService.GetRestaurantId()
                     && _authService.GetRoleName() != "SuperAdmin")
                     throw new InvalidOperationException("insufficient privileges to remove entity");
 
@@ -191,17 +192,17 @@ namespace RestaurantManagement.DAL.Abstraction
         public virtual void Remove(T entity, CancellationToken cancellationToken = default)
         {
             if (entity is IRestaurant)
-                if (((IRestaurant)entity).RestaurantId != ((IRestaurant)entity).RestaurantId
+                if (((IRestaurant)entity).RestaurantId != _authService.GetRestaurantId()
                     && _authService.GetRoleName() != "SuperAdmin")
                     throw new InvalidOperationException("insufficient privileges to remove entity");
 
-            _dbContext.Entry<T>(entity).State = EntityState.Deleted;
+            _dbContext.Entry(entity).State = EntityState.Deleted;
         }
 
         public virtual T Update(T entityToUpdate, CancellationToken cancellationToken = default)
         {
             if (entityToUpdate is IRestaurant)
-                if (((IRestaurant)entityToUpdate).RestaurantId != ((IRestaurant)entityToUpdate).RestaurantId
+                if (((IRestaurant)entityToUpdate).RestaurantId != _authService.GetRestaurantId()
                     && _authService.GetRoleName() != "SuperAdmin")
                     throw new InvalidOperationException("insufficient privileges to update entity");
 
