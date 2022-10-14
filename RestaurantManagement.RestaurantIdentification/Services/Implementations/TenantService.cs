@@ -9,14 +9,12 @@ namespace RestaurantManagement.RestaurantIdentification.Services.Implementations
 {
     public class TenantService : AbstractTenantService
     {
-        private readonly ITenantInformationResolver _tenantInformationResolver;
         private readonly IRestaurantSettingsRepository _restaurantSettingsRepository;
 
         public TenantService(IHttpContextAccessor httpContextAccessor,
                              ITenantInformationResolver tenantInformationResolver,
                              IRestaurantSettingsRepository restaurantSettingsRepository) : base(tenantInformationResolver, httpContextAccessor)
         {
-            _tenantInformationResolver = tenantInformationResolver;
             _restaurantSettingsRepository = restaurantSettingsRepository;
         }
 

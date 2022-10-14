@@ -8,13 +8,13 @@ namespace RestaurantManagement.BLL.BLs
     public class OrderBL : IOrderBL
     {
         private readonly IOrderRepository _orderRepository;
-        private readonly IOrderDetailsBL _orderDetailsBL;
+        private readonly IOrderDetailsBL _orderDetailsBl;
         private readonly IUnitOfWork _unitOfWork;
 
         public OrderBL(IUnitOfWork unitOfWork, IOrderRepository orderRepository, IOrderDetailsBL orderDetailsBl)
         {
             _orderRepository = orderRepository;
-            _orderDetailsBL = orderDetailsBl;
+            _orderDetailsBl = orderDetailsBl;
             _unitOfWork = unitOfWork;
         }
         public async Task<Order> AddAsync(int userId, Order order, IEnumerable<OrderDetails> orderDetails, CancellationToken cancellationToken)
@@ -22,7 +22,7 @@ namespace RestaurantManagement.BLL.BLs
             try
             {
                 await _unitOfWork.BeginTransactionAsync(cancellationToken);
-                await _orderDetailsBL.AddAsync(userId, orderDetails.ToList(), cancellationToken);
+                await _orderDetailsBl.AddAsync(userId, orderDetails.ToList(), cancellationToken);
 
                 order.TotalPrice = CalculateOrderSum(orderDetails);
                 order.IsPaid = false;

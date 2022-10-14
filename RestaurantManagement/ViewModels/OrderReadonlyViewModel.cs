@@ -1,6 +1,4 @@
-﻿using RestaurantManagement.Core.Entities;
-
-namespace RestaurantManagement.API.ViewModels
+﻿namespace RestaurantManagement.API.ViewModels
 {
     public class OrderReadonlyViewModel
     {

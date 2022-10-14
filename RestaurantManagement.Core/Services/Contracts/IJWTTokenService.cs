@@ -2,9 +2,9 @@
 
 namespace RestaurantManagement.Core.Services.Contracts
 {
-    public interface IJWTTokenService
+    public interface IJwtTokenService
     {
-        string GenerateJWTToken(UserModel user);
-        UserModel DecodeToken(string jWTToken);
+        string GenerateJwtToken(UserModel user);
+        UserModel DecodeToken(string jwtToken);
     }
 }

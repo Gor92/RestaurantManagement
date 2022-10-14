@@ -60,7 +60,7 @@ builder.Services.Decorate<IOrderDetailsBL, OrderDetailsBlProxy>();
 
 builder.Services.AddScoped<IAccessControlService, AccessControlService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
-builder.Services.AddScoped<IJWTTokenService, JWTTokenService>();
+builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

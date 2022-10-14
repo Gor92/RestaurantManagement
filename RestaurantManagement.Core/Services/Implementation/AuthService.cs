@@ -10,7 +10,7 @@ namespace RestaurantManagement.Core.Services.Implementation
         private readonly StringValues _token;
         private readonly UserModel _userModel;
 
-        public AuthService(IJWTTokenService jWtTokenService, IHttpContextAccessor httpContextAccessor)
+        public AuthService(IJwtTokenService jWtTokenService, IHttpContextAccessor httpContextAccessor)
         {
             var httpContextAccessor1 = httpContextAccessor;
             _token = new StringValues();

@@ -9,9 +9,9 @@ namespace RestaurantManagement.BLL.SecureProxies
         private readonly IAccessControlService _accessControlService;
         private readonly IOrderBL _orderBl;
 
-        public OrderBlProxy(IOrderBL orderBL, IAccessControlService accessControlService)
+        public OrderBlProxy(IOrderBL orderBl, IAccessControlService accessControlService)
         {
-            _orderBl = orderBL;
+            _orderBl = orderBl;
             _accessControlService = accessControlService;
         }
         public async Task<Order> AddAsync(int userId, Order order, IEnumerable<OrderDetails> orderDetails, CancellationToken cancellationToken)

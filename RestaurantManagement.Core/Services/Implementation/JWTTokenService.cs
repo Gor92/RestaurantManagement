@@ -9,10 +9,10 @@ using RestaurantManagement.Core.Models.OptionsModels;
 
 namespace RestaurantManagement.Core.Services.Implementation
 {
-    public class JWTTokenService : IJWTTokenService
+    public class JwtTokenService : IJwtTokenService
     {
         private readonly JwtModel _jwtModel;
-        public JWTTokenService(IOptions<JwtModel> options)
+        public JwtTokenService(IOptions<JwtModel> options)
         {
             _jwtModel = options.Value ?? throw new ArgumentNullException(nameof(options.Value));
         }
@@ -29,11 +29,8 @@ namespace RestaurantManagement.Core.Services.Implementation
 
             if (!string.IsNullOrEmpty(userIdValue) && !string.IsNullOrEmpty(restaurantIdValue))
             {
-                var successParsingUser = false;
-                var successParsingRestaurant = false;
-
-                successParsingUser = int.TryParse(userIdValue, out var userId);
-                successParsingRestaurant = int.TryParse(restaurantIdValue, out var restaurantId);
+                var successParsingUser = int.TryParse(userIdValue, out var userId);
+                var successParsingRestaurant = int.TryParse(restaurantIdValue, out var restaurantId);
 
                 if (!successParsingUser || !successParsingRestaurant)
                     throw new UnauthorizedAccessException();
@@ -48,7 +45,7 @@ namespace RestaurantManagement.Core.Services.Implementation
             throw new UnauthorizedAccessException();
         }
 
-        public string GenerateJWTToken(UserModel user)
+        public string GenerateJwtToken(UserModel user)
         {
 
             var tokenDescriptor = new SecurityTokenDescriptor
@@ -69,7 +66,6 @@ namespace RestaurantManagement.Core.Services.Implementation
             };
             var tokenHandler = new JwtSecurityTokenHandler();
             var token = tokenHandler.CreateToken(tokenDescriptor);
-            var jwtToken = tokenHandler.WriteToken(token);
             var stringToken = tokenHandler.WriteToken(token);
             return stringToken;
         }

@@ -19,7 +19,7 @@ namespace RestaurantManagement.RestaurantIdentification.Services.Implementations
 
         public async Task<TenantContext?> GetTenantAsync(CancellationToken cancellationToken)
         {
-            var tenantSelector = _tenantInformationResolver.GetTenantSelector(_httpContextAccessor.HttpContext);
+            var tenantSelector = _tenantInformationResolver.GetTenantSelector(_httpContextAccessor.HttpContext!);
             return await GetTenantCoreAsync(tenantSelector, cancellationToken);
         }
 
