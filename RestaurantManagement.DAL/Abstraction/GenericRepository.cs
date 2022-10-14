@@ -1,11 +1,11 @@
-﻿using System.Linq;
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
 using RestaurantManagement.Core;
 using Microsoft.EntityFrameworkCore;
 using RestaurantManagement.Core.Entities;
 using RestaurantManagement.Core.Metadata;
 using RestaurantManagement.Core.Services.Contracts;
 using RestaurantManagement.Core.Repositories.Abstraction;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace RestaurantManagement.DAL.Abstraction
 {
@@ -22,12 +22,12 @@ namespace RestaurantManagement.DAL.Abstraction
             _authService = authService;
         }
 
-        public virtual  IEnumerable<T> BulkInsert(IEnumerable<T> entities,
+        public virtual IEnumerable<T> BulkInsert(IEnumerable<T> entities,
             CancellationToken cancellationToken = default)
         {
             var list = new List<T>();
             foreach (var entity in entities)
-                 list.Add(Insert(entity, cancellationToken));
+                list.Add(Insert(entity, cancellationToken));
 
             return list;
         }
@@ -72,49 +72,64 @@ namespace RestaurantManagement.DAL.Abstraction
         }
         public virtual IEnumerable<T> GetAll()
         {
-            return DbSet.AsNoTracking();
+            IQueryable<T> query = DbSet;
+            if (typeof(IRestaurant).IsAssignableFrom(typeof(T)))
+            {
+                //TODO rethink
+                query = ((query as IQueryable<IRestaurant>) ?? throw new InvalidOperationException())
+                    .Where(q => q.RestaurantId == _authService.GetRestaurantId()) as IQueryable<T>;
+            }
+
+            return query!.AsNoTracking();
         }
 
         public virtual async Task<IEnumerable<T>> GetAsync<TKey>(Expression<Func<T, bool>> predicate,
                                                            CancellationToken cancellationToken,
                                                            int? count = null,
                                                            int? currentPage = null,
-                                                           Expression<Func<T, TKey>>? orderBy = null,
+                                                           Expression<Func<T, TKey>> orderBy = null,
                                                            SortDirection? sortDirection = null,
-                                                           Expression<Func<T, object>>[]? includes = null)
+                                                           Expression<Func<T, object>>[] includes = null)
         {
             IQueryable<T> query = DbSet;
 
+            if (typeof(IRestaurant).IsAssignableFrom(typeof(T)))
+            {
+                //TODO rethink
+                query = ((query as IQueryable<IRestaurant>) ?? throw new InvalidOperationException())
+                    .Where(q => q.RestaurantId == _authService.GetRestaurantId()) as IQueryable<T>;
+            }
+
             if (predicate is not null)
-                query.Where(predicate);
+                query!.Where(predicate);
 
             if (orderBy is not null)
             {
                 if (sortDirection is not null && sortDirection == SortDirection.Asc)
-                    query = query.OrderBy(orderBy);
+                    query = query!.OrderBy(orderBy);
                 if (sortDirection is not null && sortDirection == SortDirection.Desc)
-                    query = query.OrderByDescending(orderBy);
+                    query = query!.OrderByDescending(orderBy);
             }
 
             if (count is not null)
             {
                 if (currentPage is not null)
-                    query.Skip(((int)currentPage) * (int)count).Take((int)count);
-                else query.Take((int)count);
+                    query!.Skip(((int)currentPage) * (int)count).Take((int)count);
+                else query!.Take((int)count);
             }
 
             if (includes is not null)
                 foreach (var include in includes)
                 {
-                    query = query.Include(include);
+                    query = query!.Include(include);
                 }
 
-            return await query.ToListAsync(cancellationToken);
+            return await query!.ToListAsync(cancellationToken);
         }
 
         public async Task<T> GetByIdAsync(int id)
         {
-            var data =await GetAsync<T>(x => x.Id == id,CancellationToken.None);
+            var data = await GetAsync<T>(x => x.Id == id, CancellationToken.None);
             return data.SingleOrDefault();
         }
 
