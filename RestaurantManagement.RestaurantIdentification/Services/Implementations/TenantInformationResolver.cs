@@ -1,6 +1,5 @@
 ﻿using System.Linq.Expressions;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Primitives;
 using RestaurantManagement.Core.Entities;
 using RestaurantManagement.Core.Services.Contracts;
 using RestaurantManagement.RestaurantIdentification.Services.Contracts;
@@ -9,22 +8,21 @@ namespace RestaurantManagement.RestaurantIdentification.Services.Implementations
 {
     public class TenantInformationResolver : ITenantInformationResolver
     {
-        private readonly IJWTTokenService _jWTTokenService;
+        private readonly IJwtTokenService _jwtTokenService;
 
-        public TenantInformationResolver(IJWTTokenService jWTTokenService)
+        public TenantInformationResolver(IJwtTokenService jwtTokenService)
         {
-            _jWTTokenService = jWTTokenService;
+            _jwtTokenService = jwtTokenService;
         }
 
         public Expression<Func<RestaurantSettings, bool>> GetTenantSelector(HttpContext httpContext)
         {
-            StringValues token = "";
-            httpContext.Request.Headers.TryGetValue("Authorization", out token);
+            httpContext.Request.Headers.TryGetValue("Authorization", out var token);
 
             if (string.IsNullOrEmpty(token))
                 throw new UnauthorizedAccessException();
 
-            var userModel = _jWTTokenService.DecodeToken(token);
+            var userModel = _jwtTokenService.DecodeToken(token);
 
             if (userModel == null)
                 throw new ArgumentNullException(nameof(userModel));

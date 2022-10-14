@@ -1,22 +1,20 @@
 ﻿using System.Data;
 using Microsoft.EntityFrameworkCore;
-using System.Runtime.InteropServices;
 using Microsoft.EntityFrameworkCore.Storage;
 using RestaurantManagement.Core.Services.Contracts;
-using RestaurantManagement.Core.Repositories.Contracts;
 
 namespace RestaurantManagement.DAL.Database
 {
     public class UnitOfWork : IUnitOfWork, IDisposable
     {
         private readonly RestaurantManagementContext _dbContext;
-        private IDbContextTransaction? _transaction;
+        private IDbContextTransaction _transaction;
         private bool _disposedValue;
         public UnitOfWork(RestaurantManagementContext dbContext)
         {
             _dbContext = dbContext;
         }
-        
+
         public async Task BeginTransactionAsync(CancellationToken cancellationToken = default)
         {
             _transaction = await _dbContext.Database.BeginTransactionAsync(IsolationLevel.ReadCommitted, cancellationToken);

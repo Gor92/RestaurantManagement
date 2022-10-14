@@ -2,7 +2,6 @@
 using RestaurantManagement.Core.Models;
 using RestaurantManagement.Core.Entities;
 using RestaurantManagement.API.ViewModels;
-using RestaurantManagement.Core.Services.Contracts;
 using IMapper = RestaurantManagement.Core.Services.Contracts.IMapper;
 
 namespace RestaurantManagement.API

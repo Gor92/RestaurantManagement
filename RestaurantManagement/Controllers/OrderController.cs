@@ -10,13 +10,13 @@ namespace RestaurantManagement.API.Controllers
     [Route("orders")]
     public class OrderController : ControllerBase
     {
-        private readonly IOrderBL _orderBL;
+        private readonly IOrderBL _orderBl;
         private readonly IAuthService _authService;
         private readonly IMapper _mapper;
 
-        public OrderController(IOrderBL orderBL, IAuthService authService, IMapper mapper)
+        public OrderController(IOrderBL orderBl, IAuthService authService, IMapper mapper)
         {
-            _orderBL = orderBL;
+            _orderBl = orderBl;
             _authService = authService;
             _mapper = mapper;
         }
@@ -24,12 +24,12 @@ namespace RestaurantManagement.API.Controllers
         [HttpPost(Name = "CreateOrder")]
         [OpenApiOperation("Create Order", "Endpoint to create a new Order")]
         [Produces("application/json")]
-        public async Task<IActionResult> AddOrder([FromBody]OrderReadonlyViewModel orderReadonlyViewModel, CancellationToken cancellationToken)
+        public async Task<IActionResult> AddOrder([FromBody] OrderReadonlyViewModel orderReadonlyViewModel, CancellationToken cancellationToken)
         {
             var order = _mapper.Map<OrderReadonlyViewModel, Order>(orderReadonlyViewModel);
             var orderDetails = _mapper.Map<OrderDetailsReadonlyViewModel, OrderDetails>(orderReadonlyViewModel.OrderDetailsReadonlyViewModel);
 
-            var createdOrder = await _orderBL.AddAsync(_authService.GetUserId(), order, orderDetails, cancellationToken);
+            var createdOrder = await _orderBl.AddAsync(_authService.GetUserId(), order, orderDetails, cancellationToken);
             return Ok(createdOrder);
         }
     }

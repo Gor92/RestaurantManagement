@@ -9,13 +9,13 @@ namespace RestaurantManagement.API.Controllers
     [Route("restaurants")]
     public class RestaurantController : ControllerBase
     {
-        private IRestaurantBL _restaurantBL;
+        private IRestaurantBL _restaurantBl;
         private readonly IAuthService _authService;
         private readonly IMapper _mapper;
 
         public RestaurantController(IRestaurantBL restaurantBl, IAuthService authService, IMapper mapper)
         {
-            _restaurantBL = restaurantBl;
+            _restaurantBl = restaurantBl;
             _authService = authService;
             _mapper = mapper;
         }
@@ -23,7 +23,7 @@ namespace RestaurantManagement.API.Controllers
         [HttpGet("{restaurantId}")]
         public async Task<IActionResult> GetByIdAsync(int restaurantId)
         {
-            var restaurant = await _restaurantBL.GetByIdAsync(_authService.GetUserId(), restaurantId);
+            var restaurant = await _restaurantBl.GetByIdAsync(_authService.GetUserId(), restaurantId);
             var viewModel = _mapper.Map<Restaurant, RestaurantReadonlyViewModel>(restaurant);
 
             return Ok(viewModel);

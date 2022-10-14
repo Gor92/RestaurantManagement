@@ -47,19 +47,20 @@ namespace RestaurantManagement.Core.Repositories.Abstraction
         /// implementation classes that match the given <paramref name="predicate"/>
         /// </summary>
         /// <param name="predicate">The expression used for evaluating a matching item</param>
+        /// <param name="cancellationToken">The cancellation token</param>
         /// <param name="count">entity count</param>
         /// <param name="currentPage">Current Page</param>
         /// <param name="orderBy">The expression used for evaluating order by functionality</param>
         /// <param name="sortDirection"> Sort Direction (ASC or DESC)</param>
-        /// <param name="cancellationToken">The cancellation token</param>
+        /// <param name="includes"></param>
         /// <returns>A collection of item instances who meet the <paramref name="predicate"/> condition</returns>
         Task<IEnumerable<T>> GetAsync<TKey>(Expression<Func<T, bool>> predicate,
-                                                           CancellationToken cancellationToken,
-                                                           int? count = null,
-                                                           int? currentPage = null,
-                                                           Expression<Func<T, TKey>>? orderBy = null,
-                                                           SortDirection? sortDirection = null,
-                                                           Expression<Func<T, object>>[]? includes = null);
+            CancellationToken cancellationToken,
+            int? count = null,
+            int? currentPage = null,
+            Expression<Func<T, TKey>>? orderBy = null,
+            SortDirection? sortDirection = null,
+            Expression<Func<T, object>>[]? includes = null);
 
         /// <summary>
         /// Gets the count of <see cref="T"/> for given predicate
@@ -99,7 +100,7 @@ namespace RestaurantManagement.Core.Repositories.Abstraction
         /// <param name="cancellationToken">The Cancellation token</param>
         /// <returns>Boolean value if all cart items deleted successfully or not</returns>
         ValueTask<bool> ExistsAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken = default);
-        
+
         IEnumerable<T> GetAll();
     }
 }

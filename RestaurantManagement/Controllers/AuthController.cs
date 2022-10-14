@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using RestaurantManagement.Core.Models;
 using Microsoft.AspNetCore.Authorization;
-using RestaurantManagement.Core.Entities;
 using RestaurantManagement.API.ViewModels;
 using RestaurantManagement.Core.Services.Contracts;
 using RestaurantManagement.Core.Services.Contracts.BLs;
@@ -22,7 +21,7 @@ namespace RestaurantManagement.API.Controllers
 
         [AllowAnonymous]
         [HttpPost("CreateToken")]
-        public IActionResult GetAuthToken([FromBody]UserReadonlyViewModel user)
+        public IActionResult GetAuthToken([FromBody] UserReadonlyViewModel user)
         {
             var userModel = _mapper.Map<UserReadonlyViewModel, UserModel>(user);
 
