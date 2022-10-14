@@ -9,22 +9,19 @@ namespace RestaurantManagement.Core.Services.Implementation
     public class AccessControlService : IAccessControlService
     {
         private readonly IUserRolePermissionRepository _userRolePermissionRepository;
-        private readonly IUserRepository _userRepository;
 
-        public AccessControlService(IUserRolePermissionRepository userRolePermissionRepository,
-                                    IUserRepository userRepository)
+        public AccessControlService(IUserRolePermissionRepository userRolePermissionRepository)
         {
             _userRolePermissionRepository = userRolePermissionRepository;
-            _userRepository = userRepository;
         }
 
-        public async Task ValidateAccessByUserAsync(int userId, IEnumerable<Permission> resourceAccesses, CancellationToken cancellationToken)
+        public async Task ValidateAccessByUserAsync(int userId, IEnumerable<Permission>? resourceAccesses, CancellationToken cancellationToken)
         {
             var userPermissions = await _userRolePermissionRepository.GetAsync<User>(x => x.UserId == userId, cancellationToken);
             ValidateAccessAsync(userPermissions.Select(x => new Permission() { AccessLevel = x.AccessLevel, Resource = x.Resource }).ToList(), resourceAccesses);
         }
 
-        public void ValidateAccessAsync(ICollection<Permission> userRolePermissions, IEnumerable<Permission> resourceAccesses)
+        public void ValidateAccessAsync(ICollection<Permission> userRolePermissions, IEnumerable<Permission>? resourceAccesses)
         {
             ValidateAccess(userRolePermissions, resourceAccesses);
         }
@@ -39,7 +36,7 @@ namespace RestaurantManagement.Core.Services.Implementation
             ValidateAccess(permissions, neededPermissions);
         }
 
-        private ICollection<Permission> GetAccess(MethodInfo methodInfo, Type classType)
+        private static IEnumerable<Permission> GetAccess(MethodInfo methodInfo, Type classType)
         {
             var list = new List<Permission>();
             var classResourceType = classType.GetCustomAttribute<AccessControlAttribute>();
@@ -67,20 +64,24 @@ namespace RestaurantManagement.Core.Services.Implementation
             return list;
         }
 
-        private static void ValidateAccess(IEnumerable<Permission> userPesmissions, IEnumerable<Permission> neededPemrissions)
+        private static void ValidateAccess(IEnumerable<Permission> userPermissions, IEnumerable<Permission>? neededPermissions)
         {
-            if (neededPemrissions == null || !neededPemrissions.Any())
-                return;
-
-            var dict = GetDict(userPesmissions);
-
-            foreach (var neededPermission in neededPemrissions)
+            if (neededPermissions != null)
             {
-                bool isResourceAvailable = dict.ContainsKey(neededPermission.Resource.Type);
-                bool isAccessLevelValid = isResourceAvailable && dict[neededPermission.Resource.Type].HasFlag(neededPermission.AccessLevel);
-                if (!isResourceAvailable || !isAccessLevelValid)
-                    throw new Exception($"access to {neededPermission.Resource.Type} resource needed with {neededPermission.AccessLevel} permission");
+                var permissions = neededPermissions as Permission[] ?? neededPermissions.ToArray();
+                if (!permissions.Any())
+                    return;
 
+                var dict = GetDict(userPermissions);
+
+                foreach (var neededPermission in permissions)
+                {
+                    bool isResourceAvailable = dict.ContainsKey(neededPermission.Resource.Type);
+                    bool isAccessLevelValid = isResourceAvailable && dict[neededPermission.Resource.Type].HasFlag(neededPermission.AccessLevel);
+                    if (!isResourceAvailable || !isAccessLevelValid)
+                        throw new Exception($"access to {neededPermission.Resource.Type} resource needed with {neededPermission.AccessLevel} permission");
+
+                }
             }
         }
 
