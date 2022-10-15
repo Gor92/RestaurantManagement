@@ -17,7 +17,7 @@ public class RestaurantBL : IRestaurantBL
     }
     public async Task<Restaurant> AddAsync(int userId, Restaurant restaurant)
     {
-        restaurant = _restaurantRepository.Insert(restaurant);
+        restaurant = await _restaurantRepository.InsertAsync(restaurant);
         await _unitOfWork.SaveChangesAsync();
 
         return restaurant;

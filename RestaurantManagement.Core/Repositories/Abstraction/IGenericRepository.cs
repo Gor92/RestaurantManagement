@@ -18,14 +18,14 @@ namespace RestaurantManagement.Core.Repositories.Abstraction
         /// <param name="entity">The item values to create</param>
         /// <param name="cancellationToken">The cancellation token</param>
         /// <returns>A newly created item instance Id</returns>
-        T Insert(T entity, CancellationToken cancellationToken = default);
+        Task<T> InsertAsync(T entity, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Creates multiple items representing the given <paramref name="entities"/>
         /// </summary>
         /// <param name="entities">The items to be created</param>
         /// <param name="cancellationToken">The cancellation token</param>
-        IEnumerable<T> BulkInsert(IEnumerable<T> entities, CancellationToken cancellationToken = default);
+        Task<IEnumerable<T>> BulkInsert(IEnumerable<T> entities, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Updates the object that corresponds to the given <paramref name="entityToUpdate"/>

@@ -16,7 +16,7 @@ namespace RestaurantManagement.DAL.Database
             //Order
             modelBuilder.Entity<RestaurantSettings>().HasKey(x => x.Id);
             modelBuilder.Entity<RestaurantSettings>().Property(x => x.Id).ValueGeneratedOnAdd();
-            modelBuilder.Entity<RestaurantSettings>().Property(x => x.RowVersion).IsRowVersion();
+            modelBuilder.Entity<RestaurantSettings>().Property(x => x.RowVersion).ValueGeneratedOnAddOrUpdate().IsRowVersion();
         }
     }
 }

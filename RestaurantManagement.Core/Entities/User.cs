@@ -17,10 +17,11 @@ namespace RestaurantManagement.Core.Entities
         public DateTimeOffset UpdateDate { get; set; }
         public bool IsLocked { get; set; }
         public bool IsDeleted { get; set; }
-        public int RestaurantId { get; set; }
+        public int? RestaurantId { get; set; }
         public virtual ICollection<Order> CreatedOrders { get; set; }
         public virtual ICollection<Order> UpdatedOrders { get; set; }
-        public virtual ICollection<OrderDetails> OrderDetails { get; set; }
+        public virtual ICollection<OrderDetails> CreatedOrderDetails { get; set; }
+        public virtual ICollection<OrderDetails> UpdatedOrderDetails { get; set; }
         public virtual ICollection<Product> CreatedProducts { get; set; }
         public virtual ICollection<Product> UpdatedProducts { get; set; }
 
