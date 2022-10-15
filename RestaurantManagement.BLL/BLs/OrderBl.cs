@@ -22,12 +22,13 @@ namespace RestaurantManagement.BLL.BLs
             try
             {
                 await _unitOfWork.BeginTransactionAsync(cancellationToken);
-                await _orderDetailsBl.AddAsync(userId, orderDetails.ToList(), cancellationToken);
-
                 order.TotalPrice = CalculateOrderSum(orderDetails);
                 order.IsPaid = false;
+                var insertedOrder = await _orderRepository.InsertAsync(order, cancellationToken);
+                var detailsList = orderDetails.ToList();
+                detailsList.ForEach(x => x.OrderId = insertedOrder.Id);
 
-                _orderRepository.Insert(order, cancellationToken);
+                await _orderDetailsBl.AddAsync(userId, detailsList, cancellationToken);
 
                 await _unitOfWork.CommitTransactionAsync(cancellationToken);
 
@@ -35,7 +36,7 @@ namespace RestaurantManagement.BLL.BLs
 
                 return order;
             }
-            catch
+            catch(Exception ex)
             {
                 await _unitOfWork.RollbackTransactionAsync(cancellationToken);
                 throw;

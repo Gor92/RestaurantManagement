@@ -39,13 +39,15 @@ namespace RestaurantManagement.DAL.Migrations
                     b.Property<bool>("IsPaid")
                         .HasColumnType("bit");
 
-                    b.Property<int>("RestaurantId")
+                    b.Property<int?>("RestaurantId")
+                        .IsRequired()
                         .HasColumnType("int");
 
-                    b.Property<long>("RowVersion")
+                    b.Property<byte[]>("RowVersion")
                         .IsConcurrencyToken()
+                        .IsRequired()
                         .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("bigint");
+                        .HasColumnType("rowversion");
 
                     b.Property<int>("TableId")
                         .HasColumnType("int");
@@ -102,11 +104,15 @@ namespace RestaurantManagement.DAL.Migrations
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
-                    b.Property<int>("RestaurantId")
+                    b.Property<int?>("RestaurantId")
+                        .IsRequired()
                         .HasColumnType("int");
 
-                    b.Property<long>("RowVersion")
-                        .HasColumnType("bigint");
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .IsRequired()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
 
                     b.Property<DateTimeOffset>("UpdateDate")
                         .HasColumnType("datetimeoffset");
@@ -114,19 +120,17 @@ namespace RestaurantManagement.DAL.Migrations
                     b.Property<int>("UpdatedByUserId")
                         .HasColumnType("int");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
+
+                    b.HasIndex("CreatedByUserId");
 
                     b.HasIndex("OrderId");
 
-                    b.HasIndex("ProductId")
-                        .IsUnique();
+                    b.HasIndex("ProductId");
 
                     b.HasIndex("RestaurantId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UpdatedByUserId");
 
                     b.ToTable("OrderDetails");
                 });
@@ -156,13 +160,15 @@ namespace RestaurantManagement.DAL.Migrations
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("RestaurantId")
+                    b.Property<int?>("RestaurantId")
+                        .IsRequired()
                         .HasColumnType("int");
 
-                    b.Property<long>("RowVersion")
+                    b.Property<byte[]>("RowVersion")
                         .IsConcurrencyToken()
+                        .IsRequired()
                         .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("bigint");
+                        .HasColumnType("rowversion");
 
                     b.Property<DateTimeOffset>("UpdateDate")
                         .HasColumnType("datetimeoffset");
@@ -190,7 +196,6 @@ namespace RestaurantManagement.DAL.Migrations
                             Name = "Product 1",
                             Price = 10m,
                             RestaurantId = 1,
-                            RowVersion = 1L,
                             UpdateDate = new DateTimeOffset(new DateTime(1997, 1, 1, 1, 1, 1, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
                             UpdatedByUserId = 1
                         },
@@ -203,7 +208,6 @@ namespace RestaurantManagement.DAL.Migrations
                             Name = "Product 2",
                             Price = 15m,
                             RestaurantId = 1,
-                            RowVersion = 2L,
                             UpdateDate = new DateTimeOffset(new DateTime(1997, 1, 1, 1, 1, 1, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
                             UpdatedByUserId = 1
                         },
@@ -216,7 +220,6 @@ namespace RestaurantManagement.DAL.Migrations
                             Name = "Product 3",
                             Price = 20m,
                             RestaurantId = 1,
-                            RowVersion = 1L,
                             UpdateDate = new DateTimeOffset(new DateTime(1997, 1, 1, 1, 1, 1, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
                             UpdatedByUserId = 1
                         });
@@ -234,8 +237,11 @@ namespace RestaurantManagement.DAL.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<long>("RowVersion")
-                        .HasColumnType("bigint");
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .IsRequired()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
 
                     b.Property<int>("SupportedAccess")
                         .HasColumnType("int");
@@ -246,6 +252,36 @@ namespace RestaurantManagement.DAL.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Resource");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Description = "Order",
+                            SupportedAccess = 1,
+                            Type = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Description = "Order",
+                            SupportedAccess = 4,
+                            Type = 1
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Description = "Order",
+                            SupportedAccess = 3,
+                            Type = 1
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Description = "Order",
+                            SupportedAccess = 2,
+                            Type = 1
+                        });
                 });
 
             modelBuilder.Entity("RestaurantManagement.Core.Entities.Restaurant", b =>
@@ -260,8 +296,11 @@ namespace RestaurantManagement.DAL.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<long>("RowVersion")
-                        .HasColumnType("bigint");
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .IsRequired()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
 
                     b.HasKey("Id");
 
@@ -271,8 +310,7 @@ namespace RestaurantManagement.DAL.Migrations
                         new
                         {
                             Id = 1,
-                            Name = "Restaurant 1",
-                            RowVersion = 1L
+                            Name = "Restaurant 1"
                         });
                 });
 
@@ -288,17 +326,25 @@ namespace RestaurantManagement.DAL.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("RestaurantId")
+                    b.Property<int?>("RestaurantId")
                         .HasColumnType("int");
 
-                    b.Property<long>("RowVersion")
+                    b.Property<byte[]>("RowVersion")
                         .IsConcurrencyToken()
+                        .IsRequired()
                         .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("bigint");
+                        .HasColumnType("rowversion");
 
                     b.HasKey("Id");
 
                     b.ToTable("Roles");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "SuperAdmin"
+                        });
                 });
 
             modelBuilder.Entity("RestaurantManagement.Core.Entities.RolePermission", b =>
@@ -312,14 +358,17 @@ namespace RestaurantManagement.DAL.Migrations
                     b.Property<int>("PermissionId")
                         .HasColumnType("int");
 
-                    b.Property<int>("RestaurantId")
+                    b.Property<int?>("RestaurantId")
                         .HasColumnType("int");
 
                     b.Property<int>("RoleId")
                         .HasColumnType("int");
 
-                    b.Property<long>("RowVersion")
-                        .HasColumnType("bigint");
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .IsRequired()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
 
                     b.HasKey("Id");
 
@@ -339,16 +388,18 @@ namespace RestaurantManagement.DAL.Migrations
                     b.Property<bool>("IsReserved")
                         .HasColumnType("bit");
 
-                    b.Property<int>("RestaurantId")
+                    b.Property<int?>("RestaurantId")
+                        .IsRequired()
                         .HasColumnType("int");
 
                     b.Property<int>("RestaurantRelatedTableId")
                         .HasColumnType("int");
 
-                    b.Property<long>("RowVersion")
+                    b.Property<byte[]>("RowVersion")
                         .IsConcurrencyToken()
+                        .IsRequired()
                         .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("bigint");
+                        .HasColumnType("rowversion");
 
                     b.HasKey("Id");
 
@@ -362,8 +413,7 @@ namespace RestaurantManagement.DAL.Migrations
                             Id = 1,
                             IsReserved = false,
                             RestaurantId = 1,
-                            RestaurantRelatedTableId = 1,
-                            RowVersion = 1L
+                            RestaurantRelatedTableId = 1
                         });
                 });
 
@@ -419,13 +469,14 @@ namespace RestaurantManagement.DAL.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("RestaurantId")
+                    b.Property<int?>("RestaurantId")
                         .HasColumnType("int");
 
-                    b.Property<long>("RowVersion")
+                    b.Property<byte[]>("RowVersion")
                         .IsConcurrencyToken()
+                        .IsRequired()
                         .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("bigint");
+                        .HasColumnType("rowversion");
 
                     b.Property<DateTimeOffset>("UpdateDate")
                         .HasColumnType("datetimeoffset");
@@ -451,7 +502,6 @@ namespace RestaurantManagement.DAL.Migrations
                             Password = "1234567",
                             PhoneNumber = "4324213",
                             RestaurantId = 1,
-                            RowVersion = 1L,
                             UpdateDate = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0))
                         });
                 });
@@ -470,16 +520,17 @@ namespace RestaurantManagement.DAL.Migrations
                     b.Property<int>("ResourceId")
                         .HasColumnType("int");
 
-                    b.Property<int>("RestaurantId")
+                    b.Property<int?>("RestaurantId")
                         .HasColumnType("int");
 
                     b.Property<int>("RoleId")
                         .HasColumnType("int");
 
-                    b.Property<long>("RowVersion")
+                    b.Property<byte[]>("RowVersion")
                         .IsConcurrencyToken()
+                        .IsRequired()
                         .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("bigint");
+                        .HasColumnType("rowversion");
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");
@@ -489,6 +540,40 @@ namespace RestaurantManagement.DAL.Migrations
                     b.HasIndex("ResourceId");
 
                     b.ToTable("UserRolePermissions");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            AccessLevel = 1,
+                            ResourceId = 1,
+                            RoleId = 1,
+                            UserId = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            AccessLevel = 2,
+                            ResourceId = 2,
+                            RoleId = 1,
+                            UserId = 1
+                        },
+                        new
+                        {
+                            Id = 3,
+                            AccessLevel = 4,
+                            ResourceId = 3,
+                            RoleId = 1,
+                            UserId = 1
+                        },
+                        new
+                        {
+                            Id = 4,
+                            AccessLevel = 3,
+                            ResourceId = 4,
+                            RoleId = 1,
+                            UserId = 1
+                        });
                 });
 
             modelBuilder.Entity("RestaurantManagement.Core.Entities.Order", b =>
@@ -528,6 +613,12 @@ namespace RestaurantManagement.DAL.Migrations
 
             modelBuilder.Entity("RestaurantManagement.Core.Entities.OrderDetails", b =>
                 {
+                    b.HasOne("RestaurantManagement.Core.Entities.User", "CreatedUser")
+                        .WithMany("CreatedOrderDetails")
+                        .HasForeignKey("CreatedByUserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
                     b.HasOne("RestaurantManagement.Core.Entities.Order", "Order")
                         .WithMany("OrderDetails")
                         .HasForeignKey("OrderId")
@@ -543,14 +634,16 @@ namespace RestaurantManagement.DAL.Migrations
                     b.HasOne("RestaurantManagement.Core.Entities.Restaurant", "Restaurant")
                         .WithMany("OrdersDetails")
                         .HasForeignKey("RestaurantId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("RestaurantManagement.Core.Entities.User", "User")
-                        .WithMany("OrderDetails")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                    b.HasOne("RestaurantManagement.Core.Entities.User", "UpdatedUser")
+                        .WithMany("UpdatedOrderDetails")
+                        .HasForeignKey("UpdatedByUserId")
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
+
+                    b.Navigation("CreatedUser");
 
                     b.Navigation("Order");
 
@@ -558,7 +651,7 @@ namespace RestaurantManagement.DAL.Migrations
 
                     b.Navigation("Restaurant");
 
-                    b.Navigation("User");
+                    b.Navigation("UpdatedUser");
                 });
 
             modelBuilder.Entity("RestaurantManagement.Core.Entities.Product", b =>
@@ -655,11 +748,13 @@ namespace RestaurantManagement.DAL.Migrations
 
             modelBuilder.Entity("RestaurantManagement.Core.Entities.User", b =>
                 {
+                    b.Navigation("CreatedOrderDetails");
+
                     b.Navigation("CreatedOrders");
 
                     b.Navigation("CreatedProducts");
 
-                    b.Navigation("OrderDetails");
+                    b.Navigation("UpdatedOrderDetails");
 
                     b.Navigation("UpdatedOrders");
 

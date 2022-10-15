@@ -1,8 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Collections.Generic;
+﻿using RestaurantManagement.Core;
 using Microsoft.EntityFrameworkCore;
 using RestaurantManagement.Core.Entities;
 
@@ -12,28 +8,28 @@ namespace RestaurantManagement.DAL.DataSeed
     {
         public static void Execute(ModelBuilder modelBuilder)
         {
-           
+
             var restaurant = new Restaurant()
             {
                 Id = 1,
                 Name = "Restaurant 1",
-                RowVersion = 1,
+                //RowVersion = Guid.NewGuid(),
             };
             modelBuilder.Entity<Restaurant>().HasData(restaurant);
 
             var user = new User()
             {
                 Id = 1,
-                Email ="test@gmail.com",
-                FirstName="Test",
+                Email = "test@gmail.com",
+                FirstName = "Test",
                 LastName = "Test",
-                MiddleName="Test",
-                Password="1234567",
-                MobilePhoneNumber="43214324213",
-                PhoneNumber="4324213",
+                MiddleName = "Test",
+                Password = "1234567",
+                MobilePhoneNumber = "43214324213",
+                PhoneNumber = "4324213",
                 Login = "test",
                 RestaurantId = restaurant.Id,
-                RowVersion = 1,
+                //RowVersion = Guid.NewGuid(),
 
             };
 
@@ -46,8 +42,94 @@ namespace RestaurantManagement.DAL.DataSeed
                 RestaurantId = restaurant.Id,
                 RestaurantRelatedTableId = 1,
                 IsReserved = false,
-                RowVersion = 1,
+                //RowVersion = Guid.NewGuid(),
 
+            });
+
+            modelBuilder.Entity<Resource>().HasData(new List<Resource>()
+            {
+                new Resource()
+                {
+                    Id=1,
+                    Description = "Order",
+                    //RowVersion = Guid.NewGuid(),
+                    SupportedAccess = AccessLevel.Add,
+                    Type = ResourceType.Order
+                },
+                new Resource()
+                {
+                    Id = 2,
+                    Description = "Order",
+                    //RowVersion = Guid.NewGuid(),
+                    SupportedAccess = AccessLevel.Delete,
+                    Type = ResourceType.Order
+                },new Resource()
+                {
+                    Id = 3,
+                    Description = "Order",
+                    //RowVersion = Guid.NewGuid(),
+                    SupportedAccess = AccessLevel.Read,
+                    Type = ResourceType.Order
+                },new Resource()
+                {
+                    Id = 4,
+                    Description = "Order",
+                    //RowVersion = Guid.NewGuid(),
+                    SupportedAccess = AccessLevel.Update,
+                    Type = ResourceType.Order
+                },
+            });
+
+            modelBuilder.Entity<Role>().HasData(new Role()
+            {
+                Id = 1,
+                //RowVersion = Guid.NewGuid(),
+                Name = "SuperAdmin",
+                RestaurantId = null,
+            });
+
+            modelBuilder.Entity<UserRolePermission>().HasData(new List<UserRolePermission>()
+            {
+                new UserRolePermission()
+                {
+                    Id =1,
+                    //RowVersion = Guid.NewGuid(),
+                    AccessLevel = AccessLevel.Add,
+                    RestaurantId = null,
+                    RoleId = 1,
+                    UserId = 1,
+                    ResourceId = 1
+                },
+                new UserRolePermission()
+                {
+                    Id =2,
+                    //RowVersion = Guid.NewGuid(),
+                    AccessLevel = AccessLevel.Update,
+                    RestaurantId = null,
+                    RoleId = 1,
+                    UserId = 1,
+                    ResourceId = 2
+                },
+                new UserRolePermission()
+                {
+                    Id =3,
+                    //RowVersion = Guid.NewGuid(),
+                    AccessLevel = AccessLevel.Delete,
+                    RestaurantId = null,
+                    RoleId = 1,
+                    UserId = 1,
+                    ResourceId = 3
+                },
+                new UserRolePermission()
+                {
+                    Id =4,
+                    //RowVersion = Guid.NewGuid(),
+                    AccessLevel = AccessLevel.Read,
+                    RestaurantId = null,
+                    RoleId = 1,
+                    UserId = 1,
+                    ResourceId = 4
+                },
             });
 
             modelBuilder.Entity<Product>().HasData(new List<Product>()
@@ -62,7 +144,7 @@ namespace RestaurantManagement.DAL.DataSeed
                     UpdatedByUserId= user.Id,
                     Description="drink",
                     Price = 10,
-                    RowVersion = 1,
+                    //RowVersion = Guid.NewGuid(),
                     RestaurantId = restaurant.Id,
 
                 },
@@ -76,7 +158,7 @@ namespace RestaurantManagement.DAL.DataSeed
                     UpdatedByUserId= user.Id,
                     Price = 15,
                     Description = "drink",
-                    RowVersion = 2,
+                    //RowVersion = Guid.NewGuid(),
                     RestaurantId = restaurant.Id,
 
                 },
@@ -90,7 +172,7 @@ namespace RestaurantManagement.DAL.DataSeed
                     UpdatedByUserId= user.Id,
                     Price = 20,
                     Description = "drink",
-                    RowVersion = 1,
+                    //RowVersion = Guid.NewGuid(),
                     RestaurantId = restaurant.Id,
                 },
             });

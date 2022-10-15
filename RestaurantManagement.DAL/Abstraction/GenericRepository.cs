@@ -21,10 +21,15 @@ namespace RestaurantManagement.DAL.Abstraction
             _authService = authService;
         }
 
-        public virtual IEnumerable<T> BulkInsert(IEnumerable<T> entities,
+        public virtual async Task<IEnumerable<T>> BulkInsert(IEnumerable<T> entities,
             CancellationToken cancellationToken = default)
         {
-            return entities.Select(entity => Insert(entity, cancellationToken)).ToList();
+            var list = new List<T>();
+            foreach (var entity in entities)
+            {
+                list.Add(await InsertAsync(entity, cancellationToken));
+            }
+            return list;
         }
 
         public virtual bool BulkRemove(IEnumerable<T> entities, CancellationToken cancellationToken = default)
@@ -117,8 +122,8 @@ namespace RestaurantManagement.DAL.Abstraction
 
             if (count is not null)
             {
-                query = currentPage is not null 
-                    ? query!.Skip(((int)currentPage) * (int)count).Take((int)count) 
+                query = currentPage is not null
+                    ? query!.Skip(((int)currentPage) * (int)count).Take((int)count)
                     : query!.Take((int)count);
             }
 
@@ -135,31 +140,43 @@ namespace RestaurantManagement.DAL.Abstraction
             return data.SingleOrDefault();
         }
 
-        public virtual T Insert(T entity, CancellationToken cancellationToken = default)
+        public virtual async Task<T> InsertAsync(T entity, CancellationToken cancellationToken = default)
         {
-            switch (entity)
+            try
             {
-                case IRestaurant restaurant when restaurant.RestaurantId != _authService.GetRestaurantId()
-                                                 && _authService.GetRoleName() != "SuperAdmin":
-                    throw new InvalidOperationException("insufficient privileges to insert entity");
-                case null:
-                    throw new Exception();
-            }
+                switch (entity)
+                {
+                    case IRestaurant restaurant when restaurant.RestaurantId != _authService.GetRestaurantId()
+                                                     && _authService.GetRoleName() != "SuperAdmin":
+                        throw new InvalidOperationException("insufficient privileges to insert entity");
+                    case null:
+                        throw new Exception();
+                }
 
-            if (entity is IDateMetadata dateMetadata)
+                if (entity is IDateMetadata dateMetadata)
+                {
+                    dateMetadata.UpdateDate = _authService.GetSystemDate();
+                    dateMetadata.CreateDate = _authService.GetSystemDate();
+                }
+
+                if (entity is IAuditMetadata auditMetadata)
+                {
+                    auditMetadata.UpdatedByUserId = _authService.GetUserId();
+                    auditMetadata.CreatedByUserId = _authService.GetUserId();
+                }
+
+                //entity.RowVersion = Guid.NewGuid();
+
+                _dbSet.Add(entity);
+
+                await _dbContext.SaveChangesAsync(cancellationToken);
+                return entity;
+            }
+            catch (DbUpdateException e)
             {
-                dateMetadata.UpdateDate = _authService.GetSystemDate();
-                dateMetadata.CreateDate = _authService.GetSystemDate();
+                Console.WriteLine(e);
+                throw;
             }
-
-            if (entity is IAuditMetadata auditMetadata)
-            {
-                auditMetadata.UpdatedByUserId = _authService.GetUserId();
-                auditMetadata.CreatedByUserId = _authService.GetUserId();
-            }
-
-            _dbSet.Add(entity);
-            return entity;
         }
 
         public virtual async Task RemoveAsync(int id, CancellationToken cancellationToken = default)
@@ -205,6 +222,7 @@ namespace RestaurantManagement.DAL.Abstraction
             if (entityToUpdate is IAuditMetadata auditMetadata)
                 auditMetadata.UpdatedByUserId = _authService.GetUserId();
 
+            //entityToUpdate.RowVersion = Guid.NewGuid();
             _dbContext.Update(entityToUpdate);
 
             return entityToUpdate;

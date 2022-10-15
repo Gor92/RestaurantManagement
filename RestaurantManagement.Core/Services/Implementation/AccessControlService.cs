@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using System.Linq.Expressions;
 using RestaurantManagement.Core.Entities;
 using RestaurantManagement.Core.Attributes;
 using RestaurantManagement.Core.Services.Contracts;
@@ -28,7 +29,7 @@ namespace RestaurantManagement.Core.Services.Implementation
 
         public async Task ValidateAccessAsync(int userId, Type classType, string methodName, CancellationToken cancellationToken)
         {
-            var permissions = (await _userRolePermissionRepository.GetAsync<User>(x => x.UserId == userId, cancellationToken))
+            var permissions = (await _userRolePermissionRepository.GetAsync<User>(x => x.UserId == userId,  cancellationToken, includes: new Expression<Func<UserRolePermission, object>>[] { c => c.Resource }))
                               .Select(x => new Permission() { AccessLevel = x.AccessLevel, Resource = x.Resource })
                               .ToList();
             var neededPermissions = GetAccess(classType.GetMethod(methodName)!, classType);

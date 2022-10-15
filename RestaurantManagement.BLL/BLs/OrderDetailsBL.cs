@@ -22,8 +22,7 @@ namespace RestaurantManagement.BLL.BLs
         }
         public async Task<List<OrderDetails>> AddAsync(int userId, List<OrderDetails> orderDetails, CancellationToken cancellationToken)
         {
-            _orderDetailsRepository.BulkInsert(orderDetails, cancellationToken);
-            await _unitOfWork.SaveChangesAsync(cancellationToken);
+            await _orderDetailsRepository.BulkInsert(orderDetails, cancellationToken);
             return orderDetails;
             
         }

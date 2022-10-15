@@ -1,6 +1,4 @@
-﻿using System.Data;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage;
+﻿using Microsoft.EntityFrameworkCore.Storage;
 using RestaurantManagement.Core.Services.Contracts;
 
 namespace RestaurantManagement.DAL.Database
@@ -17,7 +15,7 @@ namespace RestaurantManagement.DAL.Database
 
         public async Task BeginTransactionAsync(CancellationToken cancellationToken = default)
         {
-            _transaction = await _dbContext.Database.BeginTransactionAsync(IsolationLevel.ReadCommitted, cancellationToken);
+            _transaction = await _dbContext.Database.BeginTransactionAsync(cancellationToken);
         }
 
         public async Task RollbackTransactionAsync(CancellationToken cancellationToken = default)

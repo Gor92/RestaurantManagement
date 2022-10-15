@@ -5,7 +5,7 @@ namespace RestaurantManagement.Core.Entities
     public class Order : BaseEntity, IDateMetadata, IAuditMetadata, IRestaurant
     {
         public int TableId { get; set; }
-        public int RestaurantId { get; set; }
+        public int? RestaurantId { get; set; }
         public DateTimeOffset CreateDate { get; set; }
         public DateTimeOffset UpdateDate { get; set; }
         public int CreatedByUserId { get; set; }
