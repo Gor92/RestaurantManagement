@@ -24,11 +24,7 @@ namespace RestaurantManagement.DAL.Abstraction
         public virtual IEnumerable<T> BulkInsert(IEnumerable<T> entities,
             CancellationToken cancellationToken = default)
         {
-            var list = new List<T>();
-            foreach (var entity in entities)
-                list.Add(Insert(entity, cancellationToken));
-
-            return list;
+            return entities.Select(entity => Insert(entity, cancellationToken)).ToList();
         }
 
         public virtual bool BulkRemove(IEnumerable<T> entities, CancellationToken cancellationToken = default)
@@ -51,13 +47,7 @@ namespace RestaurantManagement.DAL.Abstraction
         public virtual IEnumerable<T> BulkUpdate(IEnumerable<T> entities,
             CancellationToken cancellationToken = default)
         {
-            var list = new List<T>();
-            foreach (var entity in entities)
-            {
-                list.Add(Update(entity, cancellationToken));
-            }
-
-            return list;
+            return entities.Select(entity => Update(entity, cancellationToken)).ToList();
         }
 
         public virtual async ValueTask<int> CountAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken = default)
@@ -127,17 +117,14 @@ namespace RestaurantManagement.DAL.Abstraction
 
             if (count is not null)
             {
-                if (currentPage is not null)
-                    query = query!.Skip(((int)currentPage) * (int)count).Take((int)count);
-                else 
-                    query = query!.Take((int)count);
+                query = currentPage is not null 
+                    ? query!.Skip(((int)currentPage) * (int)count).Take((int)count) 
+                    : query!.Take((int)count);
             }
 
-            if (includes is not null)
-                foreach (var include in includes)
-                {
-                    query = query!.Include(include);
-                }
+            if (includes is null) return await query!.ToListAsync(cancellationToken);
+
+            query = includes.Aggregate(query, (current, include) => current!.Include(include));
 
             return await query!.ToListAsync(cancellationToken);
         }
@@ -150,26 +137,25 @@ namespace RestaurantManagement.DAL.Abstraction
 
         public virtual T Insert(T entity, CancellationToken cancellationToken = default)
         {
-            if (entity is IRestaurant)
-                if (((IRestaurant)entity).RestaurantId != _authService.GetRestaurantId()
-                    && _authService.GetRoleName() != "SuperAdmin")
+            switch (entity)
+            {
+                case IRestaurant restaurant when restaurant.RestaurantId != _authService.GetRestaurantId()
+                                                 && _authService.GetRoleName() != "SuperAdmin":
                     throw new InvalidOperationException("insufficient privileges to insert entity");
-
-            if (entity is null)
-            {
-                throw new Exception();
+                case null:
+                    throw new Exception();
             }
 
-            if (entity is IDateMetadata)
+            if (entity is IDateMetadata dateMetadata)
             {
-                ((IDateMetadata)entity).UpdateDate = _authService.GetSystemDate();
-                ((IDateMetadata)entity).CreateDate = _authService.GetSystemDate();
+                dateMetadata.UpdateDate = _authService.GetSystemDate();
+                dateMetadata.CreateDate = _authService.GetSystemDate();
             }
 
-            if (entity is IAuditMetadata)
+            if (entity is IAuditMetadata auditMetadata)
             {
-                ((IAuditMetadata)entity).UpdatedByUserId = _authService.GetUserId();
-                ((IAuditMetadata)entity).CreatedByUserId = _authService.GetUserId();
+                auditMetadata.UpdatedByUserId = _authService.GetUserId();
+                auditMetadata.CreatedByUserId = _authService.GetUserId();
             }
 
             _dbSet.Add(entity);
@@ -178,21 +164,24 @@ namespace RestaurantManagement.DAL.Abstraction
 
         public virtual async Task RemoveAsync(int id, CancellationToken cancellationToken = default)
         {
-            var entity = await _dbSet.FindAsync(id);
+            if (_dbSet != null)
+            {
+                var entity = await _dbSet.FindAsync(new object[] { id, cancellationToken }, cancellationToken: cancellationToken);
 
-            if (entity is IRestaurant)
-                if (((IRestaurant)entity).RestaurantId != _authService.GetRestaurantId()
-                    && _authService.GetRoleName() != "SuperAdmin")
-                    throw new InvalidOperationException("insufficient privileges to remove entity");
+                if (entity is IRestaurant restaurant)
+                    if (restaurant.RestaurantId != _authService.GetRestaurantId()
+                        && _authService.GetRoleName() != "SuperAdmin")
+                        throw new InvalidOperationException("insufficient privileges to remove entity");
 
-            if (entity != null)
-                Remove(entity, cancellationToken);
+                if (entity != null)
+                    Remove(entity, cancellationToken);
+            }
         }
 
         public virtual void Remove(T entity, CancellationToken cancellationToken = default)
         {
-            if (entity is IRestaurant)
-                if (((IRestaurant)entity).RestaurantId != _authService.GetRestaurantId()
+            if (entity is IRestaurant restaurant)
+                if (restaurant.RestaurantId != _authService.GetRestaurantId()
                     && _authService.GetRoleName() != "SuperAdmin")
                     throw new InvalidOperationException("insufficient privileges to remove entity");
 
@@ -201,21 +190,20 @@ namespace RestaurantManagement.DAL.Abstraction
 
         public virtual T Update(T entityToUpdate, CancellationToken cancellationToken = default)
         {
-            if (entityToUpdate is IRestaurant)
-                if (((IRestaurant)entityToUpdate).RestaurantId != _authService.GetRestaurantId()
-                    && _authService.GetRoleName() != "SuperAdmin")
-                    throw new InvalidOperationException("insufficient privileges to update entity");
-
-            if (entityToUpdate is null)
+            switch (entityToUpdate)
             {
-                throw new Exception();
+                case IRestaurant restaurant when restaurant.RestaurantId != _authService.GetRestaurantId()
+                                                 && _authService.GetRoleName() != "SuperAdmin":
+                    throw new InvalidOperationException("insufficient privileges to update entity");
+                case null:
+                    throw new Exception();
             }
 
-            if (entityToUpdate is IDateMetadata)
-                ((IDateMetadata)entityToUpdate).UpdateDate = _authService.GetSystemDate();
+            if (entityToUpdate is IDateMetadata dateMetadata)
+                dateMetadata.UpdateDate = _authService.GetSystemDate();
 
-            if (entityToUpdate is IAuditMetadata)
-                ((IAuditMetadata)entityToUpdate).UpdatedByUserId = _authService.GetUserId();
+            if (entityToUpdate is IAuditMetadata auditMetadata)
+                auditMetadata.UpdatedByUserId = _authService.GetUserId();
 
             _dbContext.Update(entityToUpdate);
 
