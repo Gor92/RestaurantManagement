@@ -12,11 +12,11 @@ namespace RestaurantManagement.DAL.Abstraction
     {
         private readonly DbContext _dbContext;
         private readonly IAuthService _authService;
-        private protected DbSet<T> DbSet;
+        private readonly DbSet<T> _dbSet;
 
         public GenericRepository(DbContext dbContext, IAuthService authService)
         {
-            DbSet = dbContext.Set<T>();
+            _dbSet = dbContext.Set<T>();
             _dbContext = dbContext;
             _authService = authService;
         }
@@ -62,7 +62,7 @@ namespace RestaurantManagement.DAL.Abstraction
 
         public virtual async ValueTask<int> CountAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken = default)
         {
-            IQueryable<T> query = DbSet;
+            IQueryable<T> query = _dbSet;
             if (typeof(IRestaurant).IsAssignableFrom(typeof(T)) && _authService.GetRoleName() != "SuperAdmin")
             {
                 //TODO rethink
@@ -74,7 +74,7 @@ namespace RestaurantManagement.DAL.Abstraction
 
         public virtual async ValueTask<bool> ExistsAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken = default)
         {
-            IQueryable<T> query = DbSet;
+            IQueryable<T> query = _dbSet;
             if (typeof(IRestaurant).IsAssignableFrom(typeof(T)) && _authService.GetRoleName() != "SuperAdmin")
             {
                 //TODO rethink
@@ -86,7 +86,7 @@ namespace RestaurantManagement.DAL.Abstraction
         }
         public virtual IEnumerable<T> GetAll()
         {
-            IQueryable<T> query = DbSet;
+            IQueryable<T> query = _dbSet;
             if (typeof(IRestaurant).IsAssignableFrom(typeof(T)) && _authService.GetRoleName() != "SuperAdmin")
             {
                 //TODO rethink
@@ -105,7 +105,7 @@ namespace RestaurantManagement.DAL.Abstraction
                                                            SortDirection? sortDirection = null,
                                                            Expression<Func<T, object>>[] includes = null)
         {
-            IQueryable<T> query = DbSet;
+            IQueryable<T> query = _dbSet;
 
             if (typeof(IRestaurant).IsAssignableFrom(typeof(T)) && _authService.GetRoleName() != "SuperAdmin")
             {
@@ -172,13 +172,13 @@ namespace RestaurantManagement.DAL.Abstraction
                 ((IAuditMetadata)entity).CreatedByUserId = _authService.GetUserId();
             }
 
-            DbSet.Add(entity);
+            _dbSet.Add(entity);
             return entity;
         }
 
         public virtual async Task RemoveAsync(int id, CancellationToken cancellationToken = default)
         {
-            var entity = await DbSet.FindAsync(id);
+            var entity = await _dbSet.FindAsync(id);
 
             if (entity is IRestaurant)
                 if (((IRestaurant)entity).RestaurantId != _authService.GetRestaurantId()
