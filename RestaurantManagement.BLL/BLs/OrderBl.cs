@@ -37,7 +37,7 @@ namespace RestaurantManagement.BLL.BLs
             var order = await _orderRepository.GetByIdAsync(orderId);
             if (order is null)
             {
-                throw new RestaurantManagementException($"Order with not found. Id:{orderId}", ErrorType.NotFound);
+                throw new RestaurantManagementException($"Order not found. Id:{orderId}", ErrorType.NotFound);
             }
 
             return order;
