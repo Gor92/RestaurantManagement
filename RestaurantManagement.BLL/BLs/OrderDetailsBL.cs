@@ -20,11 +20,12 @@ namespace RestaurantManagement.BLL.BLs
             _unitOfWork = unitOfWork;
             _orderDetailsRepository = orderDetailsRepository;
         }
+
         public async Task<List<OrderDetails>> AddAsync(int userId, List<OrderDetails> orderDetails, CancellationToken cancellationToken)
         {
             await _orderDetailsRepository.BulkInsert(orderDetails, cancellationToken);
             return orderDetails;
-            
         }
+
     }
 }

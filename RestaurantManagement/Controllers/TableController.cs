@@ -2,11 +2,11 @@
 
 namespace RestaurantManagement.API.Controllers
 {
-    public class TableController : Controller
+    public class TableController : ControllerBase
     {
         public IActionResult Index()
         {
-            return View();
+            return Ok();
         }
     }
 }

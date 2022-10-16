@@ -1,4 +1,5 @@
-﻿using RestaurantManagement.Core.Entities;
+﻿using RestaurantManagement.BLL.BLs;
+using RestaurantManagement.Core.Entities;
 using RestaurantManagement.Core.Services.Contracts;
 using RestaurantManagement.Core.Services.Contracts.BLs;
 
@@ -14,11 +15,22 @@ namespace RestaurantManagement.BLL.SecureProxies
             _orderBl = orderBl;
             _accessControlService = accessControlService;
         }
-        public async Task<Order> AddAsync(int userId, Order order, IEnumerable<OrderDetails> orderDetails, CancellationToken cancellationToken)
+        public async Task<Order> AddAsync(int userId, Order order, CancellationToken cancellationToken)
         {
             await _accessControlService.ValidateAccessAsync(userId, typeof(IOrderBL), nameof(AddAsync), cancellationToken);
-            return await _orderBl.AddAsync(userId, order, orderDetails, cancellationToken);
+            return await _orderBl.AddAsync(userId, order, cancellationToken);
         }
 
+        public async Task<Order> GetAsync(int userId, int orderId, CancellationToken cancellationToken)
+        {
+            await _accessControlService.ValidateAccessAsync(userId, typeof(IOrderBL), nameof(GetAsync), cancellationToken);
+            return await _orderBl.GetAsync(userId, orderId, cancellationToken);
+        }
+
+        public async Task UpdateAsync(int userId, Order order, CancellationToken cancellationToken)
+        {
+            await _accessControlService.ValidateAccessAsync(userId, typeof(IOrderBL), nameof(UpdateAsync), cancellationToken);
+            await _orderBl.UpdateAsync(userId, order, cancellationToken);
+        }
     }
 }

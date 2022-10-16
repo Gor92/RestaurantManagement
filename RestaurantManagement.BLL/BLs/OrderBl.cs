@@ -1,4 +1,5 @@
-﻿using RestaurantManagement.Core.Entities;
+﻿using RestaurantManagement.Core;
+using RestaurantManagement.Core.Entities;
 using RestaurantManagement.Core.Services.Contracts;
 using RestaurantManagement.Core.Repositories.Contracts;
 using RestaurantManagement.Core.Services.Contracts.BLs;
@@ -8,50 +9,44 @@ namespace RestaurantManagement.BLL.BLs
     public class OrderBL : IOrderBL
     {
         private readonly IOrderRepository _orderRepository;
-        private readonly IOrderDetailsBL _orderDetailsBl;
         private readonly IUnitOfWork _unitOfWork;
 
-        public OrderBL(IUnitOfWork unitOfWork, IOrderRepository orderRepository, IOrderDetailsBL orderDetailsBl)
+        public OrderBL(IUnitOfWork unitOfWork, IOrderRepository orderRepository)
         {
             _orderRepository = orderRepository;
-            _orderDetailsBl = orderDetailsBl;
             _unitOfWork = unitOfWork;
         }
-        public async Task<Order> AddAsync(int userId, Order order, IEnumerable<OrderDetails> orderDetails, CancellationToken cancellationToken)
+        public async Task<Order> AddAsync(int userId, Order order, CancellationToken cancellationToken)
         {
             try
             {
-                await _unitOfWork.BeginTransactionAsync(cancellationToken);
-                order.TotalPrice = CalculateOrderSum(orderDetails);
-                order.IsPaid = false;
                 var insertedOrder = await _orderRepository.InsertAsync(order, cancellationToken);
-                var detailsList = orderDetails.ToList();
-                detailsList.ForEach(x => x.OrderId = insertedOrder.Id);
-
-                await _orderDetailsBl.AddAsync(userId, detailsList, cancellationToken);
-
-                await _unitOfWork.CommitTransactionAsync(cancellationToken);
-
                 await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-                return order;
+                return insertedOrder;
             }
-            catch(Exception ex)
+            catch
             {
                 await _unitOfWork.RollbackTransactionAsync(cancellationToken);
                 throw;
             }
         }
 
-        private decimal CalculateOrderSum(IEnumerable<OrderDetails> orderDetails)
+        public async Task<Order> GetAsync(int userId, int orderId, CancellationToken cancellationToken)
         {
-            decimal sum = 0;
-            foreach (var orderDetail in orderDetails)
+            var order = await _orderRepository.GetByIdAsync(orderId);
+            if (order is null)
             {
-                sum += orderDetail.ProductPrice * orderDetail.Quantity;
+                throw new RestaurantManagementException($"Order with not found. Id:{orderId}", ErrorType.NotFound);
             }
 
-            return sum;
+            return order;
+        }
+
+        public Task UpdateAsync(int userId, Order order, CancellationToken cancellationToken)
+        {
+             _orderRepository.Update(order, cancellationToken);
+             return Task.CompletedTask;
         }
     }
 }
