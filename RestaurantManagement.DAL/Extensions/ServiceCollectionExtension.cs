@@ -20,7 +20,7 @@ namespace RestaurantManagement.DAL.Extensions
             services.AddDbContext<CommonContext>(options => options.UseSqlServer(configuration.GetSection("DefaultConnectionString").Value));
             services.AddTenantIdentification();
 
-            services.AddDbContext<RestaurantManagementContext>( (sp, options) =>
+            services.AddDbContext<RestaurantManagementContext>((sp, options) =>
                 {
                     var httpContextAccessor = sp.GetRequiredService<IHttpContextAccessor>();
                     TenantContext tenantContext = null;
@@ -31,7 +31,7 @@ namespace RestaurantManagement.DAL.Extensions
                     }
 
                     var connectionString = configuration.GetSection("DefaultConnectionString").Value;
-                    options.UseSqlServer(connectionString);
+                    options.UseSqlServer(tenantContext?.ConnectionString ?? connectionString);
                 });
 
             services.AddScoped<IRestaurantSettingsRepository, RestaurantSettingsRepository>();

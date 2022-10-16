@@ -26,7 +26,7 @@ namespace RestaurantManagement.RestaurantIdentification.Services.Implementations
             
             return new TenantContext()
             {
-                RestaurantId = tenantSetting.Id,
+                RestaurantId = tenantSetting.RestaurantId.Value,
                 ConnectionString = tenantSetting.DbConnectionString
             };
         }
