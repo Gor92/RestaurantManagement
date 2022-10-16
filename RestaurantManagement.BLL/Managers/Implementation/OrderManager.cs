@@ -20,16 +20,18 @@ namespace RestaurantManagement.BLL.Managers.Implementation
         public async Task<Order> AddOrder(int userId, Order order, IEnumerable<OrderDetails> orderDetails, CancellationToken cancellationToken)
         {
             await _unitOfWork.BeginTransactionAsync(cancellationToken);
+
             order.TotalPrice = CalculateOrderSum(orderDetails);
             order.IsPaid = false;
+
             var insertedOrder = await _orderBl.AddAsync(userId, order, cancellationToken);
+
             var detailsList = orderDetails.ToList();
             detailsList.ForEach(x => x.OrderId = insertedOrder.Id);
 
             await _orderDetailsBl.AddAsync(userId, detailsList, cancellationToken);
 
             await _unitOfWork.CommitTransactionAsync(cancellationToken);
-
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             return order;
@@ -44,6 +46,7 @@ namespace RestaurantManagement.BLL.Managers.Implementation
                 order.TotalPrice = order.TotalPrice + CalculateOrderSum(orderDetails);
 
                 await _unitOfWork.BeginTransactionAsync(cancellationToken);
+
                 await _orderBl.UpdateAsync(userId, order, cancellationToken);
                 await _orderDetailsBl.AddAsync(userId, orderDetails.ToList(), cancellationToken);
 
