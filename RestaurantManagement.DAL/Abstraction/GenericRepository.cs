@@ -58,36 +58,19 @@ namespace RestaurantManagement.DAL.Abstraction
         public virtual async ValueTask<int> CountAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken = default)
         {
             IQueryable<T> query = _dbSet;
-            if (typeof(IRestaurant).IsAssignableFrom(typeof(T)) && _authService.GetRoleName() != "SuperAdmin")
-            {
-                //TODO rethink
-                query = ((query as IQueryable<IRestaurant>) ?? throw new InvalidOperationException())
-                    .Where(q => q.RestaurantId == _authService.GetRestaurantId()) as IQueryable<T>;
-            }
+
             return await query!.Where(predicate).CountAsync(cancellationToken);
         }
 
         public virtual async ValueTask<bool> ExistsAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken = default)
         {
             IQueryable<T> query = _dbSet;
-            if (typeof(IRestaurant).IsAssignableFrom(typeof(T)) && _authService.GetRoleName() != "SuperAdmin")
-            {
-                //TODO rethink
-                query = ((query as IQueryable<IRestaurant>) ?? throw new InvalidOperationException())
-                    .Where(q => q.RestaurantId == _authService.GetRestaurantId()) as IQueryable<T>;
-            }
 
             return await query!.AnyAsync(predicate, cancellationToken);
         }
         public virtual IEnumerable<T> GetAll()
         {
             IQueryable<T> query = _dbSet;
-            if (typeof(IRestaurant).IsAssignableFrom(typeof(T)) && _authService.GetRoleName() != "SuperAdmin")
-            {
-                //TODO rethink
-                query = ((query as IQueryable<IRestaurant>) ?? throw new InvalidOperationException())
-                    .Where(q => q.RestaurantId == _authService.GetRestaurantId()) as IQueryable<T>;
-            }
 
             return query!.AsNoTracking();
         }
@@ -101,13 +84,6 @@ namespace RestaurantManagement.DAL.Abstraction
                                                            Expression<Func<T, object>>[] includes = null)
         {
             IQueryable<T> query = _dbSet;
-
-            if (typeof(IRestaurant).IsAssignableFrom(typeof(T)) && _authService.GetRoleName() != "SuperAdmin")
-            {
-                //TODO rethink
-                query = ((query as IQueryable<IRestaurant>) ?? throw new InvalidOperationException())
-                    .Where(q => q.RestaurantId == _authService.GetRestaurantId()) as IQueryable<T>;
-            }
 
             if (predicate is not null)
                 query = query!.Where(predicate);
@@ -144,15 +120,6 @@ namespace RestaurantManagement.DAL.Abstraction
         {
             try
             {
-                switch (entity)
-                {
-                    case IRestaurant restaurant when restaurant.RestaurantId != _authService.GetRestaurantId()
-                                                     && _authService.GetRoleName() != "SuperAdmin":
-                        throw new InvalidOperationException("insufficient privileges to insert entity");
-                    case null:
-                        throw new Exception();
-                }
-
                 if (entity is IDateMetadata dateMetadata)
                 {
                     dateMetadata.UpdateDate = _authService.GetSystemDate();
@@ -185,11 +152,6 @@ namespace RestaurantManagement.DAL.Abstraction
             {
                 var entity = await _dbSet.FindAsync(new object[] { id, cancellationToken }, cancellationToken: cancellationToken);
 
-                if (entity is IRestaurant restaurant)
-                    if (restaurant.RestaurantId != _authService.GetRestaurantId()
-                        && _authService.GetRoleName() != "SuperAdmin")
-                        throw new InvalidOperationException("insufficient privileges to remove entity");
-
                 if (entity != null)
                     Remove(entity, cancellationToken);
             }
@@ -197,25 +159,11 @@ namespace RestaurantManagement.DAL.Abstraction
 
         public virtual void Remove(T entity, CancellationToken cancellationToken = default)
         {
-            if (entity is IRestaurant restaurant)
-                if (restaurant.RestaurantId != _authService.GetRestaurantId()
-                    && _authService.GetRoleName() != "SuperAdmin")
-                    throw new InvalidOperationException("insufficient privileges to remove entity");
-
             _dbContext.Entry(entity).State = EntityState.Deleted;
         }
 
         public virtual T Update(T entityToUpdate, CancellationToken cancellationToken = default)
         {
-            switch (entityToUpdate)
-            {
-                case IRestaurant restaurant when restaurant.RestaurantId != _authService.GetRestaurantId()
-                                                 && _authService.GetRoleName() != "SuperAdmin":
-                    throw new InvalidOperationException("insufficient privileges to update entity");
-                case null:
-                    throw new Exception();
-            }
-
             if (entityToUpdate is IDateMetadata dateMetadata)
                 dateMetadata.UpdateDate = _authService.GetSystemDate();
 
