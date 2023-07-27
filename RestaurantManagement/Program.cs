@@ -7,9 +7,11 @@ using Microsoft.IdentityModel.Tokens;
 using RestaurantManagement.DAL.Database;
 using RestaurantManagement.DAL.Extensions;
 using RestaurantManagement.BLL.SecureProxies;
+using RestaurantManagement.BLL.Managers.Contracts;
 using RestaurantManagement.Core.Services.Contracts;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using RestaurantManagement.Core.Models.OptionsModels;
+using RestaurantManagement.BLL.Managers.Implementation;
 using RestaurantManagement.Core.Services.Contracts.BLs;
 using RestaurantManagement.Core.Services.Implementation;
 
@@ -53,6 +55,7 @@ builder.Services.AddScoped<IOrderBL, OrderBL>();
 builder.Services.Decorate<IOrderBL, OrderBlProxy>();
 
 builder.Services.AddScoped<IRestaurantBL, RestaurantBL>();
+builder.Services.AddScoped<IOrderManager, OrderManager>();
 builder.Services.AddScoped<IAuthBL, AuthBL>();
 builder.Services.AddScoped<IOrderDetailsBL, OrderDetailsBL>();
 builder.Services.Decorate<IOrderDetailsBL, OrderDetailsBlProxy>();
