@@ -1,4 +1,5 @@
-﻿using RestaurantManagement.Core;
+﻿using System.Linq.Expressions;
+using RestaurantManagement.Core;
 using RestaurantManagement.Core.Entities;
 using RestaurantManagement.Core.Services.Contracts;
 using RestaurantManagement.Core.Repositories.Contracts;
@@ -32,7 +33,7 @@ namespace RestaurantManagement.BLL.BLs
             }
         }
 
-        public async Task<Order> GetAsync(int userId, int orderId, CancellationToken cancellationToken)
+        public async Task<Order> GetByIdAsync(int userId, int orderId, CancellationToken cancellationToken)
         {
             var order = await _orderRepository.GetByIdAsync(orderId);
             if (order is null)
@@ -41,6 +42,12 @@ namespace RestaurantManagement.BLL.BLs
             }
 
             return order;
+        }
+
+        public async Task<IEnumerable<Order>> GetAsync(int userId, Expression<Func<Order, bool>> expression, CancellationToken cancellationToken)
+        {
+            var orders = await _orderRepository.GetAsync<Order>(predicate: expression,cancellationToken: cancellationToken);
+            return orders;
         }
 
         public Task UpdateAsync(int userId, Order order, CancellationToken cancellationToken)
