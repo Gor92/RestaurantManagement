@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using RestaurantManagement.Core.Entities;
 using RestaurantManagement.API.ViewModels;
+using RestaurantManagement.Core.Models.Filters;
 using RestaurantManagement.BLL.Managers.Contracts;
 using RestaurantManagement.Core.Services.Contracts;
 
@@ -41,6 +42,13 @@ namespace RestaurantManagement.API.Controllers
             var orderDetails = _mapper.Map<OrderDetailsReadonlyViewModel, OrderDetails>(orderDetailsUpdateViewModel.OrderDetailsReadonlyViewModels);
             var updatedOrder = await _orderManager.AddOrderDetailsToOrder(_authService.GetUserId(), orderDetailsUpdateViewModel.OrderId, orderDetails, cancellationToken);
             return Ok(updatedOrder);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAsync(OrderFilter orderFilter, CancellationToken cancellationToken)
+        {
+            var orders = await _orderManager.GetOrders(_authService.GetUserId(), orderFilter.Predicate(), cancellationToken);
+            return Ok(orders);
         }
     }
 }

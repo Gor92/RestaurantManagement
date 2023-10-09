@@ -1,4 +1,5 @@
-﻿using RestaurantManagement.Core.Entities;
+﻿using System.Linq.Expressions;
+using RestaurantManagement.Core.Entities;
 using RestaurantManagement.BLL.Managers.Contracts;
 using RestaurantManagement.Core.Services.Contracts;
 using RestaurantManagement.Core.Services.Contracts.BLs;
@@ -41,7 +42,7 @@ namespace RestaurantManagement.BLL.Managers.Implementation
         {
             try
             {
-                var order = await _orderBl.GetAsync(userId, orderId, cancellationToken);
+                var order = await _orderBl.GetByIdAsync(userId, orderId, cancellationToken);
                 orderDetails.ToList().ForEach(x => x.OrderId = order.Id);
                 order.TotalPrice = order.TotalPrice + CalculateOrderSum(orderDetails);
 
@@ -61,6 +62,12 @@ namespace RestaurantManagement.BLL.Managers.Implementation
                 throw;
             }
 
+        }
+
+        public async Task<IEnumerable<Order>> GetOrders(int userId,Expression<Func<Order, bool>> expression, CancellationToken cancellationToken)
+        {
+            var orders = await _orderBl.GetAsync(userId,expression, cancellationToken);
+            return orders;
         }
 
         private decimal CalculateOrderSum(IEnumerable<OrderDetails> orderDetails)

@@ -114,16 +114,16 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-UpdateDatabase();
+await UpdateDatabase();
 
 app.Run();
 
 
-void UpdateDatabase()
+async Task UpdateDatabase()
 {
     using var scope = app.Services.CreateScope();
     var context = scope.ServiceProvider.GetRequiredService<RestaurantManagementContext>();
-    context.Database.Migrate();
+    await context.Database.MigrateAsync();
     var commonContext = scope.ServiceProvider.GetRequiredService<CommonContext>();
-    commonContext.Database.Migrate();
+    await commonContext.Database.MigrateAsync();
 }

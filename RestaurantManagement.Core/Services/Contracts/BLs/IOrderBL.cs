@@ -1,4 +1,5 @@
-﻿using RestaurantManagement.Core.Entities;
+﻿using System.Linq.Expressions;
+using RestaurantManagement.Core.Entities;
 using RestaurantManagement.Core.Attributes;
 
 namespace RestaurantManagement.Core.Services.Contracts.BLs
@@ -10,7 +11,10 @@ namespace RestaurantManagement.Core.Services.Contracts.BLs
         Task<Order> AddAsync(int userId, Order order, CancellationToken cancellationToken);
 
         [AccessControl(AccessLevel = AccessLevel.Read)]
-        Task<Order> GetAsync(int userId, int orderId, CancellationToken cancellationToken);
+        Task<Order> GetByIdAsync(int userId, int orderId, CancellationToken cancellationToken);
+
+        [AccessControl(AccessLevel = AccessLevel.Read)]
+        Task<IEnumerable<Order>> GetAsync(int userId, Expression<Func<Order, bool>> expression, CancellationToken cancellationToken);
 
         [AccessControl(AccessLevel = AccessLevel.Update)]
         Task UpdateAsync(int userId, Order order, CancellationToken cancellationToken);
